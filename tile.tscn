@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://c1g65boqs52kw"]
+
+[ext_resource type="Texture2D" uid="uid://yhh6i3b71w7m" path="res://art/tile_160px.svg" id="1_ix472"]
+[ext_resource type="Script" path="res://tile.gd" id="2_wmo43"]
+
+[node name="Tile" type="Sprite2D"]
+light_mask = 0
+position = Vector2(85, 86)
+texture = ExtResource("1_ix472")
+script = ExtResource("2_wmo43")
+
+[node name="Filter" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -80.0
+offset_top = -80.0
+offset_right = -80.0
+offset_bottom = -80.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.654902, 0.666667, 0.690196, 0)
+
+[connection signal="gui_input" from="Filter" to="." method="_on_filter_gui_input"]
