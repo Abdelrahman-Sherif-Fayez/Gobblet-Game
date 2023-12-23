@@ -1,16 +1,5 @@
 extends Node
-class_name Bitboard
-var white_pieces = [0,0,0,0]
-var black_pieces = [0,0,0,0]
 
-func _init():
-	print("Hello Bitboard")
-
-func get_white_board():
-	var ans = 0
-	for i in range(4):
-		ans |= white_pieces[i]
-	return ans
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -20,3 +9,17 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
+	
+func get_XL_moves():
+	pass
+
+func get_L_moves():
+	pass
+
+func get_M_moves():
+	pass
+
+func get_S_moves():
+	pass
+
+

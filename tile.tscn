@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://c1g65boqs52kw"]
 
 [ext_resource type="Texture2D" uid="uid://yhh6i3b71w7m" path="res://art/tile_160px.svg" id="1_ix472"]
-[ext_resource type="Script" path="res://tile.gd" id="2_wmo43"]
+[ext_resource type="Script" path="res://Tile.gd" id="2_wmo43"]
 
 [node name="Tile" type="Sprite2D"]
 light_mask = 0

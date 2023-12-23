@@ -124,6 +124,7 @@ func _on_test_button_pressed():
 	#Initializing Black and White Pieces (3 stacks with 4 pieces for each)
 	Initialize_gobblet_board()
 	set_board_filter(5)
+	var _bitboard = Bitboard.new()
 
 
 func _on_start_game_button_pressed():

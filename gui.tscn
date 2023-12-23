@@ -55,15 +55,6 @@ theme_override_constants/h_separation = 5
 theme_override_constants/v_separation = 5
 columns = 5
 
-[node name="TestButton" type="Button" parent="."]
-layout_mode = 0
-offset_left = 1108.0
-offset_top = 250.0
-offset_right = 1242.0
-offset_bottom = 334.0
-theme_override_font_sizes/font_size = 40
-text = "Test"
-
 [node name="Black_Pieces" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 4
@@ -88,9 +79,6 @@ offset_bottom = 316.0
 grow_vertical = 2
 color = Color(0.270588, 0.270588, 0.270588, 1)
 
-[node name="Bitboard" type="Node" parent="."]
-script = ExtResource("2_35adu")
-
 [node name="StartGameButton" type="Button" parent="."]
 layout_mode = 0
 offset_left = 1068.0
@@ -100,5 +88,17 @@ offset_bottom = 203.0
 theme_override_font_sizes/font_size = 40
 text = "StartGame"
 
-[connection signal="pressed" from="TestButton" to="." method="_on_test_button_pressed"]
+[node name="TestButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1108.0
+offset_top = 250.0
+offset_right = 1242.0
+offset_bottom = 334.0
+theme_override_font_sizes/font_size = 40
+text = "Test"
+
+[node name="Bitboard" type="Node" parent="."]
+script = ExtResource("2_35adu")
+
 [connection signal="pressed" from="StartGameButton" to="." method="_on_start_game_button_pressed"]
+[connection signal="pressed" from="TestButton" to="." method="_on_test_button_pressed"]
