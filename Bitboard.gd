@@ -37,6 +37,9 @@ func remove_piece(location, piece_type):
 func clear():
 	white_pieces = [0,0,0,0]
 	black_pieces = [0,0,0,0]
-	
+
+func has_won(bitboard):
+	pass
+
 func generate_move_set(isBlackMove):
 	pass
