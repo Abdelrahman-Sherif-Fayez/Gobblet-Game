@@ -26,10 +26,6 @@ func _ready():
 	#piece_array.resize(16)
 	#piece_array.fill(0)
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
-
 func create_tile(pos_vector):
 	var new_tile = tile_scene.instantiate()
 	new_tile.tile_ID = grid_array.size()
@@ -97,7 +93,9 @@ func Initialize_gobblet_board():
 	var y_off = 0
 	for i in range(3):
 		for j in range(4):
+			@warning_ignore("integer_division")
 			x_off_black = 90 - (((j+1) * 25)/2)
+			@warning_ignore("integer_division")
 			x_off_white = 90 - (((j+1) * 25)/2) + 860
 			y_off = (i * 200) + 40
 			var location_black = Vector2(x_off_black, y_off)
@@ -134,7 +132,6 @@ func _on_start_game_button_pressed():
 	Initialize_gobblet_board()
 
 func clear_piece_array():
-	var j = 0
 	for i in black_pieces_array:
 		if i:
 			while len(i) > 0:

@@ -15,6 +15,3 @@ func _ready():
 	assets.append("res://art/white_75px.svg")
 	assets.append("res://art/white_100px.svg")
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
