@@ -19,6 +19,9 @@ func load_icon(piece_name):
 
 func get_size():
 	return icon.size
+	
+func get_size_number():
+	return icon.size[0]
 
 func _on_icon_gui_input(event: InputEvent):
 	if event.is_action_pressed("mouse_left"):
