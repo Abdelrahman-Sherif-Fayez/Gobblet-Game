@@ -2,7 +2,7 @@ extends Node
 
 class_name Bitboard
 
-var white_pieces = [0,0,0,0]
+var white_pieces = [0,0,0,0] #[small, medium, large, XL]
 var black_pieces = [0,0,0,0]
 
 func set_board(whites, blacks):
@@ -33,6 +33,20 @@ func remove_piece(location, piece_type):
 		black_pieces[piece_type%4] &= ~(1 << location)
 	else:
 		white_pieces[piece_type%4] &= ~(1 << location)
+
+func make_move(move, isBlackMove):
+	var fromList = []
+	if isBlackMove:
+		fromList = black_pieces
+	else:
+		fromList = white_pieces
+	var fromBit = (1 << move.from)
+	var toBit = (1 << move.to)
+	for i in range(3,0,-1):
+		if (fromList[i] & fromBit) != 0:
+			fromList[i] &= ~fromBit
+			fromList[i] |= toBit
+			break
 
 func clear():
 	white_pieces = [0,0,0,0]

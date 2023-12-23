@@ -156,6 +156,7 @@ func _on_test_button_pressed():
 func _on_start_game_button_pressed():
 	piece_selected = null
 	clear_piece_array()
+	clear_board_filter()
 	bitboard.clear()
 	piece_array = [[], [], [], [],[], [], [], [], [], [], [], [], [], [], [], []]
 	Initialize_gobblet_board()
