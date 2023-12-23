@@ -6,6 +6,7 @@ extends Control
 @onready var gobblet_board = $GobbletBoard
 @onready var bitboard = $Bitboard
 @onready var generate_path = $GeneratePath
+@onready var bot = $Bot
 
 var grid_array := []
 var black_pieces_array := [[], [], []]
@@ -170,3 +171,6 @@ func clear_piece_array():
 			while len(i) > 0:
 				i[0].queue_free()
 				i.pop_front()
+
+func update_board(move):
+	pass

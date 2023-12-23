@@ -1,7 +1,13 @@
 extends Node
 
+class_name Bitboard
+
 var white_pieces = [0,0,0,0]
 var black_pieces = [0,0,0,0]
+
+func set_board(whites, blacks):
+	white_pieces = whites.duplicate()
+	black_pieces = blacks.duplicate()
 
 func get_board():
 	return self
@@ -31,3 +37,6 @@ func remove_piece(location, piece_type):
 func clear():
 	white_pieces = [0,0,0,0]
 	black_pieces = [0,0,0,0]
+	
+func generate_move_set(isBlackMove):
+	pass

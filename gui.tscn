@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://b3ge31jp0ojcx"]
+[gd_scene load_steps=6 format=3 uid="uid://b3ge31jp0ojcx"]
 
 [ext_resource type="Script" path="res://GUI.gd" id="1_nrr3e"]
 [ext_resource type="Script" path="res://Bitboard.gd" id="2_35adu"]
 [ext_resource type="Script" path="res://GeneratePath.gd" id="3_w5tc5"]
+[ext_resource type="Script" path="res://Bot.gd" id="4_hcji7"]
+[ext_resource type="Script" path="res://Move.gd" id="5_pn7m7"]
 
 [node name="GUI" type="Control"]
 layout_mode = 3
@@ -103,6 +105,12 @@ script = ExtResource("2_35adu")
 
 [node name="GeneratePath" type="Node" parent="."]
 script = ExtResource("3_w5tc5")
+
+[node name="Bot" type="Node" parent="."]
+script = ExtResource("4_hcji7")
+
+[node name="Move" type="Node" parent="."]
+script = ExtResource("5_pn7m7")
 
 [connection signal="pressed" from="StartGameButton" to="." method="_on_start_game_button_pressed"]
 [connection signal="pressed" from="TestButton" to="." method="_on_test_button_pressed"]
