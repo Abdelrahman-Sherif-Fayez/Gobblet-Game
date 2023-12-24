@@ -148,9 +148,19 @@ func Initialize_gobblet_board():
 
 
 func _on_test_button_pressed():
+	
+	# Initializing test bitboards
+	var test_white_pieces = [0b0000000000000000, 0b0000000000000000, 0b0000000000000000, 0b0000000000000000]
+	var test_black_pieces = [0b0000000000000000, 0b0000000000000000, 0b0000000000000000, 0b0000000000000000]
+
+	# Set the board with these test states
+	bitboard.set_board(test_white_pieces, test_black_pieces)
+
+	# Call the has_won function and print the result
+	var result = bitboard.has_won()
+	print(result)
 	#Initializing Black and White Pieces (3 stacks with 4 pieces for each)
 	Initialize_gobblet_board()
-	set_board_filter(5)
 
 
 func _on_start_game_button_pressed():

@@ -11,6 +11,6 @@ func play_next_move():
 func search_moves(isBlackMove, depth, alpha, beta):
 	pass
 
-func evaluate_position(isBlackMove, bitboard):
+func evaluate_position(isBlackMove, bitboardToEval):
 	pass
 
