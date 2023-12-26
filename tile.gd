@@ -14,8 +14,8 @@ func set_filter(color = DataHandler.tile_states.NONE):
 			filter_path.color = Color(0,0,0,0)
 		DataHandler.tile_states.FREE:
 			filter_path.color = Color(0,1,0,0.4)
-		DataHandler.tile_states.SELECTED:
-			filter_path.color = Color(0,1,1,0.4)
+		#DataHandler.tile_states.SELECTED:
+			#filter_path.color = Color(0,1,1,0.4)
 
 func _on_filter_gui_input(event: InputEvent):
 	if event.is_action_pressed("mouse_left"):

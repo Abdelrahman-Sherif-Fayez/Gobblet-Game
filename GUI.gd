@@ -29,9 +29,7 @@ func _ready():
 	#piece_array.fill(0)
 
 func _process(_delta):
-	if Input.is_action_just_pressed("mouse_right") and piece_selected:
-		piece_selected = null
-		clear_board_filter()
+	pass
 
 func create_tile(pos_vector):
 	var new_tile = tile_scene.instantiate()
@@ -110,7 +108,7 @@ func clear_board_filter():
 	for i in grid_array:
 		i.set_filter()
 
-func set_board_filter(bitmap:int): # here bitmap max value is 2^16-1
+func set_board_filter(bitmap:int): # here bitmap max value is 2^16-1 and bitmap represents the legal tiles to move to
 	for i in range(16):
 		if bitmap & 1:
 			grid_array[i].set_filter(DataHandler.tile_states.FREE)
@@ -152,15 +150,29 @@ func _on_test_button_pressed():
 	# Initializing test bitboards
 	var test_white_pieces = [0b0000000000000000, 0b0000000000000000, 0b0000000000000000, 0b0000000000000000]
 	var test_black_pieces = [0b0000000000000000, 0b0000000000000000, 0b0000000000000000, 0b0000000000000000]
+	
+	set_board_filter(test_black_pieces[0])
+	set_board_filter(test_white_pieces[3])
+	
+	#for i in range(4):
+		#var location = randi_range(0,15)
+		#var stack_no = randi_range(0,2)
+		#add_piece(DataHandler.PieceNames.BLACK_100, location, 1, stack_no)
+		#add_piece(DataHandler.PieceNames.BLACK_25, (location+1)%16, 1, stack_no)
+		#add_piece(DataHandler.PieceNames.BLACK_75, (location+2)%16, 1, stack_no)
+		#add_piece(DataHandler.PieceNames.WHITE_25, (location+5)%16, 0, stack_no)
+		#add_piece(DataHandler.PieceNames.WHITE_75, (location+8)%16, 0, stack_no)
+		
 
 	# Set the board with these test states
-	bitboard.set_board(test_white_pieces, test_black_pieces)
+	#bitboard.set_board(test_white_pieces, test_black_pieces)
 
 	# Call the has_won function and print the result
-	var result = bitboard.has_won()
-	print(result)
+	#var result = bitboard.has_won()
+	#print(result)
+	
 	#Initializing Black and White Pieces (3 stacks with 4 pieces for each)
-	Initialize_gobblet_board()
+	#Initialize_gobblet_board()
 
 
 func _on_start_game_button_pressed():
