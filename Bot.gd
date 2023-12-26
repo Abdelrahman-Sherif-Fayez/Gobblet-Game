@@ -12,7 +12,8 @@ func play_next_move():
 
 func search_moves(isBlackMove, depth, alpha, beta):
 	pass
-#will use generate move set fuction recursively and will prune and use eval function to select best move acc to prunning
+#will use generate move set fuction recursively and will prune and use eval function 
+#to select best move acc to prunning
 
 func evaluate_position(isBlackMove, bitboardToEval):
 	pass
