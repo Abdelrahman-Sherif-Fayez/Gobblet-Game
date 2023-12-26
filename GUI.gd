@@ -145,7 +145,7 @@ func Initialize_gobblet_board():
 			add_piece(piece_type_white, location_white, 0, i)
 
 
-func _on_test_button_pressed():
+func _on_test_button_pressed(): # for testing purposes using print statements
 	
 	# Initializing test bitboards
 	var test_white_pieces = [0b0000000000000000, 0b0000000000000000, 0b0000000000000000, 0b0000000000000000]
