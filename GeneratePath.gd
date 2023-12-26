@@ -1,6 +1,7 @@
 extends Node
 
-
+#Same person of gen move set
+#takes bitboard and returns interger formed of ones placed in the cells of legal moves
 func get_XL_moves(position, board):
 	return 1
 

@@ -116,3 +116,8 @@ func get_covered_bits(opponent_pieces: Array, current_size: int) -> int:
 
 func generate_move_set(isBlackMove):
 	pass
+#will use get moves functions then seperate each option and add them to the layer
+#Returns A list of legal moves which is one layer of the tree.
+#will be called recursively
+#Watch ep3 (Generating paths)
+#All must watch last video , implementing the ai using C#
