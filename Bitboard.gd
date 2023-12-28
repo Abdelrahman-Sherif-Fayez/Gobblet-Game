@@ -1,5 +1,5 @@
 extends Node
-
+extends Move
 class_name Bitboard
 
 var white_pieces = [0,0,0,0] #[small, medium, large, XL]
@@ -114,8 +114,216 @@ func get_covered_bits(opponent_pieces: Array, current_size: int) -> int:
 		covered_bits |= opponent_pieces[size]
 	return covered_bits
 
-func generate_move_set(isBlackMove):
-	pass
+func get_top_view_board_takes_input(white_pieces: Array, black_pieces: Array) -> Dictionary:
+	var top_view_white = [0, 0, 0, 0]
+	var top_view_black = [0, 0, 0, 0]
+
+	for size in range(3, -1, -1):
+		top_view_white[size] = white_pieces[size] & ~get_covered_bits(black_pieces, size)
+		top_view_black[size] = black_pieces[size] & ~get_covered_bits(white_pieces, size)
+
+	return {"white": top_view_white, "black": top_view_black}
+
+func generate_move_set(white_pieces: Array, black_pieces: Array, is_black_move: bool) -> Array:
+	var possible_moves = []
+	var XL_moves = get_XL_moves(white_pieces, black_pieces, is_black_move)
+	var L_moves = get_L_moves(white_pieces, black_pieces, is_black_move)
+	var M_moves = get_M_moves(white_pieces, black_pieces, is_black_move)
+	var S_moves = get_S_moves(white_pieces, black_pieces, is_black_move)
+	var normal_external_moves = get_normal_external_moves(white_pieces, black_pieces, is_black_move)
+
+	if XL_moves.size() > 0:
+		for move in XL_moves:
+			possible_moves.append(move)
+	if L_moves.size() > 0:
+		for move in L_moves:
+			possible_moves.append(move)
+	if M_moves.size() > 0:
+		for move in M_moves:
+			possible_moves.append(move)
+	if S_moves.size() > 0:
+		for move in S_moves:
+			possible_moves.append(move)
+	if normal_external_moves.size() > 0:
+		for move in normal_external_moves:
+			possible_moves.append(move)
+
+	return possible_moves
+
+func get_remaining_pieces(pieces: Array) -> Array:
+	var mask = 0b0000000000000001
+	var num_of_remaining_pieces = []
+	var counter = 0
+
+	for i in range(4):
+		for k in range(16):
+			if (pieces[i] & mask) == mask:
+				counter += 1
+			mask <<= 1
+		num_of_remaining_pieces.append(3 - counter)
+		counter = 0
+		mask = 0b0000000000000001
+
+	return num_of_remaining_pieces
+
+
+func get_available_external_sizes(pieces):
+	var mask = 0b0000000000000001
+	var available_sizes = []
+	var num_of_remaining_pieces = self.get_remaining_pieces(pieces)
+	for i in range(4):
+		if i < 3:
+			if num_of_remaining_pieces[i] != 0 and num_of_remaining_pieces[i+1] < 3:
+				available_sizes.append(true)
+			else:
+				available_sizes.append(false)
+		else:
+			if num_of_remaining_pieces[i] != 0:
+				available_sizes.append(true)
+			else:
+				available_sizes.append(false)
+	return available_sizes
+
+func get_normal_external_moves(white_pieces, black_pieces, is_black_move):
+	var mask = 0b0000000000000001
+	var external_moves = []
+	var num_of_remaining_pieces
+	if is_black_move:
+		num_of_remaining_pieces = self.get_remaining_pieces(black_pieces)
+	else:
+		num_of_remaining_pieces = self.get_remaining_pieces(white_pieces)
+	for i in range(4):
+		if i < 3:
+			if num_of_remaining_pieces[i] != 0 and num_of_remaining_pieces[i+1] < 3:
+				var moves = self.get_moves_to_empty_cell(white_pieces, black_pieces, i, is_black_move)
+				if moves.size() > 0:
+					for move in moves:
+						external_moves.append(move)
+		else:
+			var moves = self.get_moves_to_empty_cell(white_pieces, black_pieces, i, is_black_move)
+			if moves.size() > 0:
+				for move in moves:
+					external_moves.append(move)
+	return external_moves
+
+func get_moves_to_empty_cell(white_pieces, black_pieces, size, is_black_move):
+	var temp_board = []
+	var mask = 0b0000000000000001
+	var moves = []
+	for i in range(4):
+		temp_board.append(white_pieces[i] | black_pieces[i])
+	if is_black_move:
+		for j in range(16):
+			if (temp_board[3] & mask) == 0 and (temp_board[2] & mask) == 0 and (temp_board[1] & mask) == 0 and (temp_board[0] & mask) == 0:
+				moves.append(Move(-1, j, size, true))
+			mask <<= 1
+	else:
+		for j in range(16):
+			if (temp_board[3] & mask) == 0 and (temp_board[2] & mask) == 0 and (temp_board[1] & mask) == 0 and (temp_board[0] & mask) == 0:
+				moves.append(Move(-1, j, size, false))
+			mask <<= 1
+	return moves
+
+func get_XL_moves(white_pieces, black_pieces, is_black_move):
+	var temp_board = []
+	var mask = 0b0000000000000001
+	var mask2 = 0b0000000000000001
+	var XL_moves = []
+	for i in range(4):
+		temp_board.append(white_pieces[i] | black_pieces[i])
+	if is_black_move:
+		for k in range(16):
+			if (black_pieces[3] & mask) == mask:
+				for m in range(16):
+					if (temp_board[3] & mask2) == 0:
+						XL_moves.append(Move(k, m, 3, true))
+					mask2 <<= 1
+			mask <<= 1
+	else:
+		for k in range(16):
+			if (white_pieces[3] & mask) == mask:
+				for m in range(16):
+					if (temp_board[3] & mask2) == 0:
+						XL_moves.append(Move(k, m, 3, false))
+					mask2 <<= 1
+			mask <<= 1
+	return XL_moves
+
+func get_L_moves(white_pieces, black_pieces, is_black_move):
+	var temp_board = []
+	var mask = 0b0000000000000001
+	var mask2 = 0b0000000000000001
+	var L_moves = []
+	for i in range(4):
+		temp_board.append(white_pieces[i] | black_pieces[i])
+	if is_black_move:
+		for k in range(16):
+			if black_pieces[2] & mask == mask:
+				for m in range(16):
+					if (temp_board[3] & mask2) == 0 and (temp_board[2] & mask2) == 0:
+						L_moves.append(Move.new(k, m, 2, true))
+					mask2 <<= 1
+			mask <<= 1     
+	else:
+		for k in range(16):
+			if white_pieces[2] & mask == mask:
+				for m in range(16):
+					if (temp_board[3] & mask2) == 0 and (temp_board[2] & mask2) == 0:
+						L_moves.append(Move.new(k, m, 2, false))
+					mask2 <<= 1
+			mask <<= 1     
+	return L_moves
+	
+func get_M_moves(white_pieces, black_pieces, is_black_move):
+	var temp_board = []
+	var mask = 0b0000000000000001
+	var mask2 = 0b0000000000000001
+	var M_moves = []
+	for i in range(4):
+		temp_board.append(white_pieces[i] | black_pieces[i])
+	if is_black_move:
+		for k in range(16):
+			if black_pieces[1] & mask == mask:
+				for m in range(16):
+					if (temp_board[3] & mask2) == 0 and (temp_board[2] & mask2) == 0 and (temp_board[1] & mask2) == 0:
+						M_moves.append(Move.new(k, m, 1, true))
+					mask2 <<= 1
+			mask <<= 1     
+	else:
+		for k in range(16):
+			if white_pieces[1] & mask == mask:
+				for m in range(16):
+					if (temp_board[3] & mask2) == 0 and (temp_board[2] & mask2) == 0 and (temp_board[1] & mask2) == 0:
+						M_moves.append(Move.new(k, m, 1, false))
+					mask2 <<= 1
+			mask <<= 1     
+	return M_moves
+	
+func get_S_moves(white_pieces, black_pieces, is_black_move):
+		var temp_board = []
+		var mask = 0b0000000000000001
+		var mask2 = 0b0000000000000001
+		var S_moves = []
+		for i in range(4):
+			temp_board.append(white_pieces[i] | black_pieces[i])
+		if is_black_move:
+			for k in range(16):
+				if black_pieces[0] & mask == mask:
+					for m in range(16):
+						if (temp_board[3] & mask2) == 0 and (temp_board[2] & mask2) == 0 and (temp_board[1] & mask2) == 0 and (temp_board[0] & mask2) == 0:
+							S_moves.append(Move.new(k, m, 1, true))
+						mask2 <<= 1
+				mask <<= 1     
+		else:
+			for k in range(16):
+				if white_pieces[0] & mask == mask:
+					for m in range(16):
+						if (temp_board[3] & mask2) == 0 and (temp_board[2] & mask2) == 0 and (temp_board[1] & mask2) == 0 and (temp_board[0] & mask2) == 0:
+							S_moves.append(Move.new(k, m, 1, false))
+						mask2 <<= 1
+				mask <<= 1     
+		return S_moves
+				
 #will use get moves functions then seperate each option and add them to the layer
 #Returns A list of legal moves which is one layer of the tree.
 #will be called recursively
