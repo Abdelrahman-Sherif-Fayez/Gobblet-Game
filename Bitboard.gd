@@ -1,5 +1,4 @@
 extends Node
-extends Move
 class_name Bitboard
 
 var white_pieces = [0,0,0,0] #[small, medium, large, XL]
@@ -217,12 +216,12 @@ func get_moves_to_empty_cell(white_pieces, black_pieces, size, is_black_move):
 	if is_black_move:
 		for j in range(16):
 			if (temp_board[3] & mask) == 0 and (temp_board[2] & mask) == 0 and (temp_board[1] & mask) == 0 and (temp_board[0] & mask) == 0:
-				moves.append(Move(-1, j, size, true))
+				moves.append(Move.new(-1, j, size, true))
 			mask <<= 1
 	else:
 		for j in range(16):
 			if (temp_board[3] & mask) == 0 and (temp_board[2] & mask) == 0 and (temp_board[1] & mask) == 0 and (temp_board[0] & mask) == 0:
-				moves.append(Move(-1, j, size, false))
+				moves.append(Move.new(-1, j, size, false))
 			mask <<= 1
 	return moves
 
@@ -238,7 +237,7 @@ func get_XL_moves(white_pieces, black_pieces, is_black_move):
 			if (black_pieces[3] & mask) == mask:
 				for m in range(16):
 					if (temp_board[3] & mask2) == 0:
-						XL_moves.append(Move(k, m, 3, true))
+						XL_moves.append(Move.new(k, m, 3, true))
 					mask2 <<= 1
 			mask <<= 1
 	else:
@@ -246,7 +245,7 @@ func get_XL_moves(white_pieces, black_pieces, is_black_move):
 			if (white_pieces[3] & mask) == mask:
 				for m in range(16):
 					if (temp_board[3] & mask2) == 0:
-						XL_moves.append(Move(k, m, 3, false))
+						XL_moves.append(Move.new(k, m, 3, false))
 					mask2 <<= 1
 			mask <<= 1
 	return XL_moves
