@@ -6,6 +6,7 @@ func set_board(bitboardGame):
 	bitboard = bitboardGame
 
 func play_next_move():
+	#return Move.new(-1, 3, 1, 100*100, 0) # for testing update_board (Working)
 	pass
 #will use search moves function and use make move function
 #will update the bitboard with the move 

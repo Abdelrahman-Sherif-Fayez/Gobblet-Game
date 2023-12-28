@@ -52,6 +52,25 @@ func _on_tile_clicked(tile) -> void:
 	
 	if gamestarted:
 		var move = bot.play_next_move()
+		update_board(move)
+
+func update_board(move):
+	var piece_to_move
+	if move.from_ == -1:
+		if move.isblack:
+			piece_to_move = black_pieces_array[move.stack_no].pop_front()
+		else:
+			piece_to_move = white_pieces_array[move.stack_no].pop_front()
+	else:
+		piece_to_move = piece_array[move.from_].pop_front()
+	
+	var tween = get_tree().create_tween()
+	var icon_offset = piece_to_move.get_size()
+	icon_offset.x = icon_offset.x / 2
+	icon_offset.y = icon_offset.y /  2
+	tween.tween_property(piece_to_move, "global_position", grid_array[move.to].global_position - icon_offset, 0.5)
+	piece_array[move.to].push_front(piece_to_move)
+	piece_to_move.tile_ID = move.to
 
 # A function to move the selected piece to the clicked tile
 func move_piece(piece, location)->void:  #location is an index 
@@ -79,9 +98,9 @@ func add_piece(piece_type, location, is_black, stack_no) -> void: #location is a
 	var new_piece = piece_scene.instantiate()
 	self.add_child(new_piece)
 	if is_black:
-		black_pieces_array[stack_no].push_back(new_piece)
+		black_pieces_array[stack_no].push_front(new_piece)
 	else:
-		white_pieces_array[stack_no].push_back(new_piece)
+		white_pieces_array[stack_no].push_front(new_piece)
 	new_piece.type = piece_type
 	new_piece.tile_ID = -1
 	new_piece.load_icon(piece_type)
@@ -155,6 +174,7 @@ func _on_test_button_pressed(): # for testing purposes using print statements
 	var test_black_pieces = [0b0000000000000000, 0b0000000000000000, 0b0000000000000000, 0b0000000000000000]
 	var test_white_pieces = [0b0000000000000000, 0b0000000000000000, 0b0000000000000000, 0b0000000000000000]
 	
+	
 	set_board_filter(bitboard.get_board_int())
 	
 	#for i in range(4):
@@ -197,7 +217,8 @@ func clear_piece_array():
 			while len(i) > 0:
 				i[0].queue_free()
 				i.pop_front()
-
-func update_board(move):
-	pass
-#Sherif 
+	for i in piece_array:
+		if i:
+			while len(i) > 0:
+				i[0].queue_free()
+				i.pop_front()
