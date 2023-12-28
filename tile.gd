@@ -5,7 +5,7 @@ signal tile_clicked(tile)
 @onready var filter_path = $Filter
 var tile_ID := -1
 var state = DataHandler.tile_states.NONE
-var pieces_array = [] # An array for each tile to track pieces on it
+#var pieces_array = [] # An array for each tile to track pieces on it
 
 func set_filter(color = DataHandler.tile_states.NONE):
 	state = color

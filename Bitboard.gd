@@ -9,9 +9,11 @@ func set_board(whites, blacks):
 	white_pieces = whites.duplicate()
 	black_pieces = blacks.duplicate()
 
+#To return the board and access it accoring to whose turn and what we need to calculate from
 func get_board():
 	return self
-	
+
+#Get Bitboard for the whole game for both white and black pieces at the same time
 func get_board_int():
 	var ans = 0
 	for i in range(4):

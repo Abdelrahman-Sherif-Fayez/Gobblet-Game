@@ -13,6 +13,7 @@ var black_pieces_array := [[], [], []]
 var white_pieces_array := [[], [], []]
 var piece_array := [[], [], [], [],[], [], [], [], [], [], [], [], [], [], [], []] # Array that contains the top piece of each of the 16 tiles
 var piece_selected = null
+var gamestarted := false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -48,16 +49,19 @@ func _on_tile_clicked(tile) -> void:
 	move_piece(piece_selected, tile.tile_ID)
 	clear_board_filter()
 	piece_selected = null
+	
+	if gamestarted:
+		var move = bot.play_next_move()
 
 # A function to move the selected piece to the clicked tile
 func move_piece(piece, location)->void:  #location is an index 
 	#condition if new piece moved from outside into the board
 	if piece.tile_ID == -1:
-		piece_array[location].push_back(piece)
+		piece_array[location].push_front(piece)
 		#print(piece_array[location])
 	else:
 		piece_array[piece.tile_ID].pop_front()
-		piece_array[location].push_back(piece)
+		piece_array[location].push_front(piece)
 	remove_piece_from_bitboard(piece)
 	piece.tile_ID = location
 	self.move_child(piece, -1)
@@ -148,11 +152,10 @@ func Initialize_gobblet_board():
 func _on_test_button_pressed(): # for testing purposes using print statements
 	
 	# Initializing test bitboards
-	var test_white_pieces = [0b0000000000000000, 0b0000000000000000, 0b0000000000000000, 0b0000000000000000]
 	var test_black_pieces = [0b0000000000000000, 0b0000000000000000, 0b0000000000000000, 0b0000000000000000]
+	var test_white_pieces = [0b0000000000000000, 0b0000000000000000, 0b0000000000000000, 0b0000000000000000]
 	
-	set_board_filter(test_black_pieces[0])
-	set_board_filter(test_white_pieces[3])
+	set_board_filter(bitboard.get_board_int())
 	
 	#for i in range(4):
 		#var location = randi_range(0,15)
