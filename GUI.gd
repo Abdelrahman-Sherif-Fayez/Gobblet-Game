@@ -13,7 +13,7 @@ var black_pieces_array := [[], [], []]
 var white_pieces_array := [[], [], []]
 var piece_array := [[], [], [], [],[], [], [], [], [], [], [], [], [], [], [], []] # Array that contains the top piece of each of the 16 tiles
 var piece_selected = null
-var gamestarted := false
+var gamestarted := false # false at beginning (only true for testing)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -58,9 +58,17 @@ func update_board(move):
 	var piece_to_move
 	if move.from_ == -1:
 		if move.isblack:
-			piece_to_move = black_pieces_array[move.stack_no].pop_front()
+			for i in range(3):
+				if(black_pieces_array[i][0].get_size_number() * black_pieces_array[i][0].get_size_number() == move.size):
+					piece_to_move = black_pieces_array[i].pop_front()
+					break;
 		else:
-			piece_to_move = white_pieces_array[move.stack_no].pop_front()
+			for i in range(3):
+				print(move.size)
+				print(white_pieces_array[i][0].get_size())
+				if(white_pieces_array[i][0].get_size_number() * white_pieces_array[i][0].get_size_number() == move.size):
+					piece_to_move = white_pieces_array[i].pop_front()
+					break;
 	else:
 		piece_to_move = piece_array[move.from_].pop_front()
 	
@@ -71,6 +79,7 @@ func update_board(move):
 	tween.tween_property(piece_to_move, "global_position", grid_array[move.to].global_position - icon_offset, 0.5)
 	piece_array[move.to].push_front(piece_to_move)
 	piece_to_move.tile_ID = move.to
+	piece_to_move = null
 
 # A function to move the selected piece to the clicked tile
 func move_piece(piece, location)->void:  #location is an index 

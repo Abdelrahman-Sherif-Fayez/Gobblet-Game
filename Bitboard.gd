@@ -216,7 +216,6 @@ func get_moves_to_empty_cell(white_pieces, black_pieces, size, is_black_move):
 	if is_black_move:
 		for j in range(16):
 			if (temp_board[3] & mask) == 0 and (temp_board[2] & mask) == 0 and (temp_board[1] & mask) == 0 and (temp_board[0] & mask) == 0:
-				# Hegazy add stack_no please here and in all errors
 				moves.append(Move.new(-1, j, size, true))
 			mask <<= 1
 	else:
