@@ -71,6 +71,7 @@ func update_board(move):
 					break;
 	else:
 		piece_to_move = piece_array[move.from_].pop_front()
+		remove_piece_from_bitboard(piece_to_move)
 	
 	var tween = get_tree().create_tween()
 	var icon_offset = piece_to_move.get_size()
@@ -79,7 +80,7 @@ func update_board(move):
 	tween.tween_property(piece_to_move, "global_position", grid_array[move.to].global_position - icon_offset, 0.5)
 	piece_array[move.to].push_front(piece_to_move)
 	piece_to_move.tile_ID = move.to
-	piece_to_move = null
+	bitboard.add_piece(move.to, piece_to_move.type)
 
 # A function to move the selected piece to the clicked tile
 func move_piece(piece, location)->void:  #location is an index 
@@ -127,14 +128,76 @@ func _on_piece_selected(piece):
 		piece_selected = piece
 		var board = bitboard.get_board()
 		#print(bitboard.get_board_int())
+		var moves
+		var bitboard_value_for_filter = 0
 		if piece.get_size_number() == 100:
-			set_board_filter(generate_path.get_XL_moves(piece.tile_ID, board))
+			if piece.type < 4:
+				if piece.tile_ID == -1:
+					moves = generate_path.get_normal_external_moves(board.white_pieces, board.black_pieces, 1)
+				else:
+					moves = generate_path.get_XL_moves(board.white_pieces, board.black_pieces, 1)
+				for m in moves:
+					bitboard_value_for_filter |=  1 << m.to
+				set_board_filter(bitboard_value_for_filter)
+			else:
+				if piece.tile_ID == -1:
+					moves = generate_path.get_normal_external_moves(board.white_pieces, board.black_pieces, 0)
+				else:
+					moves = generate_path.get_XL_moves(board.white_pieces, board.black_pieces, 0)
+				for m in moves:
+					bitboard_value_for_filter |= 1 << m.to
+				set_board_filter(bitboard_value_for_filter)
 		else: if piece.get_size_number() == 75:
-			set_board_filter(generate_path.get_L_moves(piece.tile_ID, board))
+			if piece.type < 4:
+				if piece.tile_ID == -1:
+					moves = generate_path.get_normal_external_moves(board.white_pieces, board.black_pieces, 1)
+				else:
+					moves = generate_path.get_L_moves(board.white_pieces, board.black_pieces, 1)
+				for m in moves:
+					bitboard_value_for_filter |= 1 << m.to
+				set_board_filter(bitboard_value_for_filter)
+			else:
+				if piece.tile_ID == -1:
+					moves = generate_path.get_normal_external_moves(board.white_pieces, board.black_pieces, 0)
+				else:
+					moves = generate_path.get_L_moves(board.white_pieces, board.black_pieces, 0)
+				for m in moves:
+					bitboard_value_for_filter |= 1 << m.to
+				set_board_filter(bitboard_value_for_filter)
 		else: if piece.get_size_number() == 50:
-			set_board_filter(generate_path.get_M_moves(piece.tile_ID, board))
+			if piece.type < 4:
+				if piece.tile_ID == -1:
+					moves = generate_path.get_normal_external_moves(board.white_pieces, board.black_pieces, 1)
+				else:
+					moves = generate_path.get_M_moves(board.white_pieces, board.black_pieces, 1)
+				for m in moves:
+					bitboard_value_for_filter |= 1 << m.to
+				set_board_filter(bitboard_value_for_filter)
+			else:
+				if piece.tile_ID == -1:
+					moves = generate_path.get_normal_external_moves(board.white_pieces, board.black_pieces, 0)
+				else:
+					moves = generate_path.get_M_moves(board.white_pieces, board.black_pieces, 0)
+				for m in moves:
+					bitboard_value_for_filter |= 1 << m.to
+				set_board_filter(bitboard_value_for_filter)
 		else: if piece.get_size_number() == 25:
-			set_board_filter(generate_path.get_S_moves(piece.tile_ID, board))
+			if piece.type < 4:
+				if piece.tile_ID == -1:
+					moves = generate_path.get_normal_external_moves(board.white_pieces, board.black_pieces, 1)
+				else:
+					moves = generate_path.get_S_moves(board.white_pieces, board.black_pieces, 1)
+				for m in moves:
+					bitboard_value_for_filter |= 1 << m.to
+				set_board_filter(bitboard_value_for_filter)
+			else:
+				if piece.tile_ID == -1:
+					moves = generate_path.get_normal_external_moves(board.white_pieces, board.black_pieces, 0)
+				else:
+					moves = generate_path.get_S_moves(board.white_pieces, board.black_pieces, 0)
+				for m in moves:
+					bitboard_value_for_filter |= 1 << m.to
+				set_board_filter(bitboard_value_for_filter)
 
 func clear_board_filter():
 	for i in grid_array:
