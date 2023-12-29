@@ -1,7 +1,7 @@
 extends Node
 class_name Bitboard
 
-@onready var generate_path = $"../GeneratePath"
+@onready var generate_path = $"--/GeneratePath"
 
 var white_pieces = [0,0,0,0] #[small, medium, large, XL]
 var black_pieces = [0,0,0,0]
@@ -150,61 +150,7 @@ func generate_move_set(white_pieces: Array, black_pieces: Array, is_black_move: 
 	if normal_external_moves.size() > 0:
 		for move in normal_external_moves:
 			possible_moves.append(move)
-
 	return possible_moves
-
-func get_remaining_pieces(pieces: Array) -> Array:
-	var mask = 0b0000000000000001
-	var num_of_remaining_pieces = []
-	var counter = 0
-
-	for i in range(4):
-		for k in range(16):
-			if (pieces[i] & mask) == mask:
-				counter += 1
-			mask <<= 1
-		num_of_remaining_pieces.append(3 - counter)
-		counter = 0
-		mask = 0b0000000000000001
-
-	return num_of_remaining_pieces
-
-
-func get_available_external_sizes(pieces):
-	var mask = 0b0000000000000001
-	var available_sizes = []
-	var num_of_remaining_pieces = self.get_remaining_pieces(pieces)
-	for i in range(4):
-		if i < 3:
-			if num_of_remaining_pieces[i] != 0 and num_of_remaining_pieces[i+1] < 3:
-				available_sizes.append(true)
-			else:
-				available_sizes.append(false)
-		else:
-			if num_of_remaining_pieces[i] != 0:
-				available_sizes.append(true)
-			else:
-				available_sizes.append(false)
-	return available_sizes
-
-func get_moves_to_empty_cell(white_pieces, black_pieces, size, is_black_move):
-	var temp_board = []
-	var mask = 0b0000000000000001
-	var moves = []
-	for i in range(4):
-		temp_board.append(white_pieces[i] | black_pieces[i])
-	if is_black_move:
-		for j in range(16):
-			if (temp_board[3] & mask) == 0 and (temp_board[2] & mask) == 0 and (temp_board[1] & mask) == 0 and (temp_board[0] & mask) == 0:
-				moves.append(Move.new(-1, j, size, true))
-			mask <<= 1
-	else:
-		for j in range(16):
-			if (temp_board[3] & mask) == 0 and (temp_board[2] & mask) == 0 and (temp_board[1] & mask) == 0 and (temp_board[0] & mask) == 0:
-				moves.append(Move.new(-1, j, size, false))
-			mask <<= 1
-	return moves
-
 
 #will use get moves functions then seperate each option and add them to the layer
 #Returns A list of legal moves which is one layer of the tree.
