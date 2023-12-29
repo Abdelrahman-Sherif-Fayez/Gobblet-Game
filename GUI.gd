@@ -277,6 +277,7 @@ func _on_start_game_button_pressed():
 	bitboard.clear()
 	piece_array = [[], [], [], [],[], [], [], [], [], [], [], [], [], [], [], []]
 	Initialize_gobblet_board()
+	#gamestarted = true
 
 func clear_piece_array():
 	for i in black_pieces_array:

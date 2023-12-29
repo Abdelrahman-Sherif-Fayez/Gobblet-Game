@@ -11,7 +11,7 @@ func play_next_move():
 #will use search moves function and use make move function
 #will update the bitboard with the move 
 
-func search_moves(isBlackMove, depth, alpha, beta):
+func search_moves(isBlackMove, depth, search_bitboard, alpha, beta):
 	pass
 #will use generate move set fuction recursively and will prune and use eval function 
 #to select best move acc to prunning
