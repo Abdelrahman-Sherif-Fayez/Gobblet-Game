@@ -1,5 +1,5 @@
 extends Node
-
+@onready var Bitboard_path = $"--/Bitboard"
 #Same person of gen move set
 #takes bitboard and returns interger formed of ones placed in the cells of legal moves
 func get_XL_moves(white_pieces, black_pieces, is_black_move):
@@ -110,7 +110,7 @@ func get_S_moves(white_pieces, black_pieces, is_black_move):
 			mask <<= 1     
 	return S_moves
 
-func get_normal_external_moves(white_pieces, black_pieces, is_black_move):
+func get_external_moves(white_pieces, black_pieces, is_black_move):
 	var mask = 0b0000000000000001
 	var external_moves = []
 	var num_of_remaining_pieces
@@ -131,6 +131,10 @@ func get_normal_external_moves(white_pieces, black_pieces, is_black_move):
 				if moves.size() > 0:
 					for move in moves:
 						external_moves.append(move)
+	var moves = self.Bitboard_path.get_external_gobbeling_moves(white_pieces, black_pieces, is_black_move)
+	if moves.size() > 0:
+		for move in moves:
+			external_moves.append(move)
 	return external_moves
 
 func get_moves_to_empty_cell(white_pieces, black_pieces, size, is_black_move):
@@ -155,7 +159,6 @@ func get_remaining_pieces(pieces: Array) -> Array:
 	var mask = 0b0000000000000001
 	var num_of_remaining_pieces = []
 	var counter = 0
-
 	for i in range(4):
 		for k in range(16):
 			if (pieces[i] & mask) == mask:
@@ -164,5 +167,4 @@ func get_remaining_pieces(pieces: Array) -> Array:
 		num_of_remaining_pieces.append(3 - counter)
 		counter = 0
 		mask = 0b0000000000000001
-
 	return num_of_remaining_pieces
