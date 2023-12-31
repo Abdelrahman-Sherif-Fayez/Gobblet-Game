@@ -1,4 +1,5 @@
 extends Node
+@onready var Bitboard_path = $"--/Bitboard"
 
 #Same person of gen move set
 #takes bitboard and returns interger formed of ones placed in the cells of legal moves
@@ -110,28 +111,32 @@ func get_S_moves(white_pieces, black_pieces, is_black_move):
 			mask <<= 1     
 	return S_moves
 
-func get_normal_external_moves(white_pieces, black_pieces, is_black_move):
-	var mask = 0b0000000000000001
-	var external_moves = []
-	var num_of_remaining_pieces
-	if is_black_move:
-		num_of_remaining_pieces = self.get_remaining_pieces(black_pieces)
-	else:
-		num_of_remaining_pieces = self.get_remaining_pieces(white_pieces)
-	for i in range(4):
-		if i < 3:
-			if num_of_remaining_pieces[i] != 0 and num_of_remaining_pieces[i+1] < 3:
-				var moves = self.get_moves_to_empty_cell(white_pieces, black_pieces, i, is_black_move)
-				if moves.size() > 0:
-					for move in moves:
-						external_moves.append(move)
-		else:
-			if num_of_remaining_pieces[i] != 0:
-				var moves = self.get_moves_to_empty_cell(white_pieces, black_pieces, i, is_black_move)
-				if moves.size() > 0:
-					for move in moves:
-						external_moves.append(move)
-	return external_moves
+func get_external_moves(white_pieces, black_pieces, is_black_move):
+    var mask = 0b0000000000000001
+    var external_moves = []
+    var num_of_remaining_pieces
+    if is_black_move:
+        num_of_remaining_pieces = self.get_remaining_pieces(black_pieces)
+    else:
+        num_of_remaining_pieces = self.get_remaining_pieces(white_pieces)
+    for i in range(4):
+        if i < 3:
+            if num_of_remaining_pieces[i] != 0 and num_of_remaining_pieces[i+1] < 3:
+                var moves = self.get_moves_to_empty_cell(white_pieces, black_pieces, i, is_black_move)
+                if moves.size() > 0:
+                    for move in moves:
+                        external_moves.append(move)
+        else:
+            if num_of_remaining_pieces[i] != 0
+                var moves = self.get_moves_to_empty_cell(white_pieces, black_pieces, i, is_black_move)
+                if moves.size() > 0:
+                    for move in moves:
+                        external_moves.append(move)
+    var moves = self.Bitboard_path.get_external_gobbeling_moves(white_pieces, black_pieces, is_black_move)
+    if moves.size() > 0:
+        for move in moves:
+            external_moves.append(move)
+    return external_moves
 
 func get_moves_to_empty_cell(white_pieces, black_pieces, size, is_black_move):
 	var temp_board = []
