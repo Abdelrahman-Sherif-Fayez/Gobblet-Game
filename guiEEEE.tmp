@@ -1,0 +1,116 @@
+[gd_scene load_steps=6 format=3 uid="uid://b3ge31jp0ojcx"]
+
+[ext_resource type="Script" path="res://GUI.gd" id="1_nrr3e"]
+[ext_resource type="Script" path="res://Bitboard.gd" id="2_35adu"]
+[ext_resource type="Script" path="res://GeneratePath.gd" id="3_w5tc5"]
+[ext_resource type="Script" path="res://Bot.gd" id="4_hcji7"]
+[ext_resource type="Script" path="res://Move.gd" id="5_pn7m7"]
+
+[node name="GUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 2.0
+offset_top = -2.0
+offset_right = 2.0
+offset_bottom = -2.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nrr3e")
+
+[node name="BackGround" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(0, 648)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.0156863, 0.168627, 0.235294, 1)
+metadata/_edit_group_ = true
+
+[node name="GobbletBoard" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -450.0
+offset_right = 198.0
+offset_bottom = 648.0
+grow_horizontal = 2
+color = Color(0.619608, 0.415686, 0.0823529, 1)
+
+[node name="BoardGrid" type="GridContainer" parent="GobbletBoard"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -324.0
+offset_top = -324.0
+offset_right = 324.0
+offset_bottom = 324.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/h_separation = 5
+theme_override_constants/v_separation = 5
+columns = 5
+
+[node name="Black_Pieces" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 8.0
+offset_top = -312.0
+offset_right = 188.0
+offset_bottom = 316.0
+grow_vertical = 2
+color = Color(0.270588, 0.270588, 0.270588, 1)
+
+[node name="White_Pieces" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_left = 860.0
+offset_top = -312.0
+offset_right = 1040.0
+offset_bottom = 316.0
+grow_vertical = 2
+color = Color(0.270588, 0.270588, 0.270588, 1)
+
+[node name="StartGameButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1068.0
+offset_top = 140.0
+offset_right = 1284.0
+offset_bottom = 203.0
+theme_override_font_sizes/font_size = 40
+text = "StartGame"
+
+[node name="TestButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1108.0
+offset_top = 250.0
+offset_right = 1242.0
+offset_bottom = 334.0
+theme_override_font_sizes/font_size = 40
+text = "Test"
+
+[node name="Bitboard" type="Node" parent="."]
+script = ExtResource("2_35adu")
+
+[node name="GeneratePath" type="Node" parent="."]
+script = ExtResource("3_w5tc5")
+
+[node name="Bot" type="Node" parent="."]
+script = ExtResource("4_hcji7")
+
+[node name="Move" type="Node" parent="."]
+script = ExtResource("5_pn7m7")
+
+[connection signal="pressed" from="StartGameButton" to="." method="_on_start_game_button_pressed"]
+[connection signal="pressed" from="TestButton" to="." method="_on_test_button_pressed"]
