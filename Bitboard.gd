@@ -184,7 +184,7 @@ func helper_get_external_gobbeling_moves(three_consecutive_pieces_mask, current_
                         current_piece_size = j
                         for k in range(current_piece_size + 1, 4):
                             if available_sizes[k]:
-                                temp_external_gobbeling_moves.append(Move(-1, i, k, is_black_move))
+                                temp_external_gobbeling_moves.append(Move.new(-1, i, k, is_black_move))
         iterator_mask1 <<= 1
     return temp_external_gobbeling_moves
     
