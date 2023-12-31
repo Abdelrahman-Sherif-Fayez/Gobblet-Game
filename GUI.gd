@@ -153,74 +153,115 @@ func _on_piece_selected(piece):
 				return
 			else:
 				piece_selected = piece
+				piece_selected.global_position = Vector2(piece_selected.position.x+45, piece_selected.position.y-45)
 				if piece.get_size_number() == 100:
 					if piece.type < 4:
 						if piece.tile_ID == -1:
-							moves = generate_path.get_normal_external_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 1)
+							moves = generate_path.get_external_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 1)
+							moves = filter_moves(moves, piece)
 						else:
 							moves = generate_path.get_XL_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 1)
 						for m in moves:
 							bitboard_value_for_filter |=  1 << m.to
 						set_board_filter(bitboard_value_for_filter)
+						# Check if the piece cannot be moved the opponent wins
+						check_if_lost(moves, 1)
 					else:
 						if piece.tile_ID == -1:
-							moves = generate_path.get_normal_external_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 0)
+							moves = generate_path.get_external_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 0)
+							moves = filter_moves(moves, piece)
 						else:
 							moves = generate_path.get_XL_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 0)
 						for m in moves:
 							bitboard_value_for_filter |= 1 << m.to
 						set_board_filter(bitboard_value_for_filter)
+						# Check if the piece cannot be moved
+						check_if_lost(moves, 0)
 				else: if piece.get_size_number() == 75:
 					if piece.type < 4:
 						if piece.tile_ID == -1:
-							moves = generate_path.get_normal_external_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 1)
+							moves = generate_path.get_external_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 1)
+							moves = filter_moves(moves, piece)
 						else:
 							moves = generate_path.get_L_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 1)
 						for m in moves:
 							bitboard_value_for_filter |= 1 << m.to
 						set_board_filter(bitboard_value_for_filter)
+						# Check if the piece cannot be moved
+						check_if_lost(moves, 1)
 					else:
 						if piece.tile_ID == -1:
-							moves = generate_path.get_normal_external_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 0)
+							moves = generate_path.get_external_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 0)
+							moves = filter_moves(moves, piece)
 						else:
 							moves = generate_path.get_L_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 0)
 						for m in moves:
 							bitboard_value_for_filter |= 1 << m.to
 						set_board_filter(bitboard_value_for_filter)
+						# Check if the piece cannot be moved
+						check_if_lost(moves, 0)
 				else: if piece.get_size_number() == 50:
 					if piece.type < 4:
 						if piece.tile_ID == -1:
-							moves = generate_path.get_normal_external_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 1)
+							moves = generate_path.get_external_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 1)
+							moves = filter_moves(moves, piece)
 						else:
 							moves = generate_path.get_M_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 1)
 						for m in moves:
 							bitboard_value_for_filter |= 1 << m.to
 						set_board_filter(bitboard_value_for_filter)
+						# Check if the piece cannot be moved
+						check_if_lost(moves, 1)
 					else:
 						if piece.tile_ID == -1:
-							moves = generate_path.get_normal_external_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 0)
+							moves = generate_path.get_external_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 0)
+							moves = filter_moves(moves, piece)
 						else:
 							moves = generate_path.get_M_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 0)
 						for m in moves:
 							bitboard_value_for_filter |= 1 << m.to
 						set_board_filter(bitboard_value_for_filter)
+						# Check if the piece cannot be moved
+						check_if_lost(moves, 0)
 				else: if piece.get_size_number() == 25:
 					if piece.type < 4:
 						if piece.tile_ID == -1:
-							moves = generate_path.get_normal_external_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 1)
+							moves = generate_path.get_external_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 1)
+							moves = filter_moves(moves, piece)
 						else:
 							moves = generate_path.get_S_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 1)
 						for m in moves:
 							bitboard_value_for_filter |= 1 << m.to
 						set_board_filter(bitboard_value_for_filter)
+						# Check if the piece cannot be moved
+						check_if_lost(moves, 1)
 					else:
 						if piece.tile_ID == -1:
-							moves = generate_path.get_normal_external_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 0)
+							moves = generate_path.get_external_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 0)
+							moves = filter_moves(moves, piece)
 						else:
 							moves = generate_path.get_S_moves(game_bitboard.white_pieces, game_bitboard.black_pieces, 0)
 						for m in moves:
 							bitboard_value_for_filter |= 1 << m.to
 						set_board_filter(bitboard_value_for_filter)
+						# Check if the piece cannot be moved
+						check_if_lost(moves, 0)
+
+func filter_moves(moves, piece) -> Array:
+	var new_moves = []
+	for move in moves:
+		if move.size == (piece.type % 4):
+			new_moves.append(move)
+	return new_moves
+
+func check_if_lost(moves:Array, is_black:bool) -> void:
+	# Check if the piece cannot be moved the opponent wins
+		if moves.size() == 0:
+			if(is_black):
+				main.show_finish_message("White wins")
+			else:
+				main.show_finish_message("Black wins")
+			gamestarted = false
 
 func clear_board_filter():
 	for i in grid_array:
@@ -266,10 +307,12 @@ func Initialize_gobblet_board():
 func _on_test_button_pressed(): # for testing purposes using print statements
 	
 	# Initializing test bitboards
-	var test_black_pieces = [0b0000000000000001, 0b0000000000100000, 0b0000010000000000, 0b1000000000000000]
-	var test_white_pieces = [0b0000000000000000, 0b0000000000000000, 0b0000000000000000, 0b0000000000000000]
+	#var test_black_pieces = [0b0000000000000001, 0b0000000000100000, 0b0000010000000000, 0b1000000000000000]
+	#var test_white_pieces = [0b0000000000000000, 0b0000000000000000, 0b0000000000000000, 0b0000000000000000]
+	#
+	#set_board_filter(bitboard.get_board_int())
 	
-	set_board_filter(bitboard.get_board_int())
+	#main.alternate_turn()
 	
 	#Set the board with these test states
 	#bitboard.set_board(test_white_pieces, test_black_pieces)
@@ -306,6 +349,8 @@ func _on_home_button_pressed():
 	clear_game()
 	bitboard.clear()
 	#Reset all variables to be made to control the game
+	
+	
 
 func clear_game():
 	piece_array = [[], [], [], [],[], [], [], [], [], [], [], [], [], [], [], []]

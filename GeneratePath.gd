@@ -1,5 +1,5 @@
 extends Node
-@onready var Bitboard_path = $"--/Bitboard"
+@onready var bitboard_path = $"../Bitboard"
 
 #Same person of gen move set
 #takes bitboard and returns interger formed of ones placed in the cells of legal moves
@@ -112,31 +112,31 @@ func get_S_moves(white_pieces, black_pieces, is_black_move):
 	return S_moves
 
 func get_external_moves(white_pieces, black_pieces, is_black_move):
-    var mask = 0b0000000000000001
-    var external_moves = []
-    var num_of_remaining_pieces
-    if is_black_move:
-        num_of_remaining_pieces = self.get_remaining_pieces(black_pieces)
-    else:
-        num_of_remaining_pieces = self.get_remaining_pieces(white_pieces)
-    for i in range(4):
-        if i < 3:
-            if num_of_remaining_pieces[i] != 0 and num_of_remaining_pieces[i+1] < 3:
-                var moves = self.get_moves_to_empty_cell(white_pieces, black_pieces, i, is_black_move)
-                if moves.size() > 0:
-                    for move in moves:
-                        external_moves.append(move)
-        else:
-            if num_of_remaining_pieces[i] != 0
-                var moves = self.get_moves_to_empty_cell(white_pieces, black_pieces, i, is_black_move)
-                if moves.size() > 0:
-                    for move in moves:
-                        external_moves.append(move)
-    var moves = self.Bitboard_path.get_external_gobbeling_moves(white_pieces, black_pieces, is_black_move)
-    if moves.size() > 0:
-        for move in moves:
-            external_moves.append(move)
-    return external_moves
+	var mask = 0b0000000000000001
+	var external_moves = []
+	var num_of_remaining_pieces
+	if is_black_move:
+		num_of_remaining_pieces = get_remaining_pieces(black_pieces)
+	else:
+		num_of_remaining_pieces = get_remaining_pieces(white_pieces)
+	for i in range(4):
+		if i < 3:
+			if num_of_remaining_pieces[i] != 0 and num_of_remaining_pieces[i+1] < 3:
+				var moves = get_moves_to_empty_cell(white_pieces, black_pieces, i, is_black_move)
+				if moves.size() > 0:
+					for move in moves:
+						external_moves.append(move)
+		else:
+			if num_of_remaining_pieces[i] != 0:
+				var moves = get_moves_to_empty_cell(white_pieces, black_pieces, i, is_black_move)
+				if moves.size() > 0:
+					for move in moves:
+						external_moves.append(move)
+	var moves = get_external_gobbeling_moves(white_pieces, black_pieces, is_black_move)
+	if moves.size() > 0:
+		for move in moves:
+			external_moves.append(move)
+	return external_moves
 
 func get_moves_to_empty_cell(white_pieces, black_pieces, size, is_black_move):
 	var temp_board = []
@@ -159,7 +159,7 @@ func get_moves_to_empty_cell(white_pieces, black_pieces, size, is_black_move):
 func get_available_external_sizes(pieces):
 	var mask = 0b0000000000000001
 	var available_sizes = []
-	var num_of_remaining_pieces = self.get_remaining_pieces(pieces)
+	var num_of_remaining_pieces = get_remaining_pieces(pieces)
 	for i in range(4):
 		if i < 3:
 			if num_of_remaining_pieces[i] != 0 and num_of_remaining_pieces[i+1] < 3:
@@ -188,3 +188,128 @@ func get_remaining_pieces(pieces: Array) -> Array:
 		mask = 0b0000000000000001
 
 	return num_of_remaining_pieces
+
+func get_external_gobbeling_moves(white_pieces, black_pieces, is_black_move):
+	var external_gobbeling_moves = []
+	var temp_moves = []
+	var result = bitboard_path.get_top_view_board_takes_input(white_pieces, black_pieces)
+	var white_top_view = result["white"]
+	var black_top_view = result["black"]
+	var top_board = 0
+	var diagonal_mask1 = 0b0000010000100001
+	var diagonal_mask2 = 0b1000010000100000
+	var diagonal_mask3 = 0b0000001001001000
+	var diagonal_mask4 = 0b0001001001000000
+	var row_mask1 = 0b0000000000000111
+	var row_mask2 = 0b0000000000001110
+	var column_mask1 = 0b0000000100010001
+	var column_mask2 = 0b0001000100010000
+	var iterator_mask1 = 0b0000000000000001
+	var iterator_mask2 = 0b0000000000000001
+	var current_piece_size = -1
+	var counter = 0
+	var current_top_view_array
+	var available_sizes
+
+	if is_black_move:
+		available_sizes = get_available_external_sizes(black_pieces)
+		current_top_view_array = white_top_view
+		for i in range(4):
+			top_board |= white_top_view[i]
+	else:
+		current_top_view_array = black_top_view
+		available_sizes = get_available_external_sizes(white_pieces)
+		for i in range(4):
+			top_board |= black_top_view[i]
+
+	if top_board & diagonal_mask1 == diagonal_mask1:
+		temp_moves = helper_get_external_gobbeling_moves(diagonal_mask1, current_top_view_array, available_sizes, is_black_move)
+		if temp_moves.size() > 0:
+			for move in temp_moves:
+				external_gobbeling_moves.append(move)
+
+	if top_board & diagonal_mask2 == diagonal_mask2:
+		temp_moves = helper_get_external_gobbeling_moves(diagonal_mask2, current_top_view_array, available_sizes, is_black_move)
+		if temp_moves.size() > 0:
+			for move in temp_moves:
+				external_gobbeling_moves.append(move)
+
+	if top_board & diagonal_mask3 == diagonal_mask3:
+		temp_moves = helper_get_external_gobbeling_moves(diagonal_mask3, current_top_view_array, available_sizes, is_black_move)
+		if temp_moves.size() > 0:
+			for move in temp_moves:
+				external_gobbeling_moves.append(move)
+
+	if top_board & diagonal_mask4 == diagonal_mask4:
+		temp_moves = helper_get_external_gobbeling_moves(diagonal_mask4, current_top_view_array, available_sizes, is_black_move)
+		if temp_moves.size() > 0:
+			for move in temp_moves:
+				external_gobbeling_moves.append(move)
+
+	for i in range(4):
+		if top_board & row_mask1 == row_mask1:
+			temp_moves = helper_get_external_gobbeling_moves(row_mask1, current_top_view_array, available_sizes, is_black_move)
+			if temp_moves.size() > 0:
+				for move in temp_moves:
+					external_gobbeling_moves.append(move)
+		if top_board & row_mask2 == row_mask2:
+			temp_moves = helper_get_external_gobbeling_moves(row_mask2, current_top_view_array, available_sizes, is_black_move)
+			if temp_moves.size() > 0:
+				for move in temp_moves:
+					external_gobbeling_moves.append(move)
+		row_mask1 <<= 4
+		row_mask2 <<= 4
+
+	for i in range(4):
+		if top_board & column_mask1 == column_mask1:
+			temp_moves = helper_get_external_gobbeling_moves(column_mask1, current_top_view_array, available_sizes, is_black_move)
+			if temp_moves.size() > 0:
+				for move in temp_moves:
+					external_gobbeling_moves.append(move)
+		if top_board & column_mask2 == column_mask2:
+			temp_moves = helper_get_external_gobbeling_moves(column_mask2, current_top_view_array, available_sizes, is_black_move)
+			if temp_moves.size() > 0:
+				for move in temp_moves:
+					external_gobbeling_moves.append(move)
+		column_mask1 <<= 1
+		column_mask2 <<= 1
+
+	return external_gobbeling_moves
+
+
+func remove_duplicates(moves_list):
+	var unique_moves = []
+	var seen_moves = {}
+
+	for move in moves_list:
+		var move_tuple = [move.from_ , move.to, move.size, move.isblack]
+
+		if move_tuple not in seen_moves:
+			seen_moves[move_tuple] = true
+			unique_moves.append(move)
+
+	return unique_moves
+
+
+func helper_get_external_gobbeling_moves(three_consecutive_pieces_mask, current_top_view_array, available_sizes, is_black_move):
+	var temp_external_gobbeling_moves = []
+	var counter = 0
+	var iterator_mask1 = 0b0000000000000001
+	var current_piece_size = -1
+
+	for i in range(16):
+		if counter == 3:
+			break
+		else:
+			if (three_consecutive_pieces_mask & iterator_mask1) == iterator_mask1:
+				counter += 1
+				for j in range(3, -1, -1):
+					if iterator_mask1 & current_top_view_array[j] == iterator_mask1:
+						current_piece_size = j
+						for k in range(current_piece_size + 1, 4):
+							if available_sizes[k]: #[f, t, t, f]
+								temp_external_gobbeling_moves.append(Move.new(-1, i, k, is_black_move))
+						break
+		iterator_mask1 <<= 1
+	return temp_external_gobbeling_moves
+	
