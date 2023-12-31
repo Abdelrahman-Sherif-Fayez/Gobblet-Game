@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://yhh6i3b71w7m" path="res://art/tile_160px.svg" id="1_ix472"]
 [ext_resource type="Script" path="res://Tile.gd" id="2_wmo43"]
 
-[node name="Tile" type="Sprite2D"]
+[node name="Tile" type="Sprite2D" groups=["tiles"]]
 light_mask = 0
 position = Vector2(85, 86)
 texture = ExtResource("1_ix472")

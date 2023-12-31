@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Piece.gd" id="1_p4d16"]
 
-[node name="Piece" type="Node2D"]
+[node name="Piece" type="Node2D" groups=["all_pieces"]]
 script = ExtResource("1_p4d16")
 
 [node name="Icon" type="TextureRect" parent="."]
