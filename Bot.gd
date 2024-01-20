@@ -1,63 +1,74 @@
 extends Node
-
+@onready var updated_bitboard = $"../Bitboard"
+@onready var generate_path = $"../GeneratePath"
 var bitboard
-
+var whitepieces = updated_bitboard.white_pieces
+var blackpieces = updated_bitboard.black_pieces
 func set_board(bitboardGame):
 	bitboard = bitboardGame
 
-func play_next_move(possible_moves, move, color):
+func play_next_move(move, isBlackMove):
 
-    var new_moves = possible_moves.copy()
-    new_moves.append((move, color))
+	if not isBlackMove:
+		whitepieces.make_move(move, isBlackMove)
+		#var newwhitepieces = white_pieces.copy()
+	elif isBlackMove:
+		blackpieces.make_move(move, isBlackMove)
+		#var newwhitepieces = white_pieces.copy()
 
-    return new_moves
 	#return Move.new(-1, 3, 100*100, 0) # for testing update_board (Working)
-	pass
 	#will use search moves function and use make move function
 	#will update the bitboard with the move 
+
+func play_best_move(depth):
+	var possible_moves = generate_path.generate_move_set(whitepieces, blackpieces, true)
+	var eval = search_moves(true, possible_moves, depth, float('-inf'), float('inf'))
+	return eval[1]
 
 func search_moves(isBlackMove, possible_moves, depth, alpha, beta):
 	##will use generate move set fuction recursively and will prune and use eval function 
 	##to select best move acc to prunning
 	##still needs to be turned to gadot 
 	if depth == 0 or not possible_moves:
-		return evaluate_position(isBlackMove, possible_moves), None
+		return evaluate_position(isBlackMove, possible_moves)
 #
 	if not isBlackMove:
 		var max_eval = float('-inf')
-		var min_eval = float('inf')
-		var best_move = None
+		var best_move
 		for move in possible_moves: 
-			var new_possible_moves = generate_move(play_next_move(possible_moves, move, color), color)
-			var eval, _ = search_moves(new_possible_moves, depth - 1, alpha, beta, False, color)
-			max_eval = max(max_eval, eval)
-			var alpha = max(alpha, eval)
+			play_next_move(move, false)
+			var new_possible_moves = generate_path.generate_move_set(whitepieces, blackpieces, isBlackMove)
+			var eval = search_moves(isBlackMove, new_possible_moves, depth - 1, alpha, beta)
+			max_eval = max(max_eval, eval[0])
+			alpha = max(alpha, eval[0])
 			if beta <= alpha:
 				break  # Beta cut-off
-			if eval == max_eval:
+			if eval[0] == max_eval:
 				best_move = move
-		return max_eval, best_move
+		return [max_eval, best_move]
 	else:
-		best_move = None
+		var best_move
+		var min_eval = float('inf')
 		for move in possible_moves:
-			var new_possible_moves = generate_moves(apply_move(possible_moves, move), color)
-			var eval, _ = minimax_with_alpha_beta_pruning_moves(new_possible_moves, depth - 1, alpha, beta, True, color)
-			min_eval = min(min_eval, eval)
-			var beta = min(beta, eval)
+			play_next_move(move, true)
+			var new_possible_moves = generate_path.generate_move_set(whitepieces, blackpieces, isBlackMove)
+			var eval = search_moves(isBlackMove, new_possible_moves, depth - 1, alpha, beta)
+			min_eval = min(min_eval, eval[0])
+			beta = min(beta, eval[0])
 			if beta <= alpha:
 				break  # Alpha cut-off
-			if eval == min_eval:
+			if eval[0] == min_eval:
 				best_move = move
-		return min_eval, best_move
+		return [min_eval, best_move]
 #
-#func evaluate_position(isBlackMove, bitboard)-> float:
-	#var final_score = 0
-	#var directions = get_all_directions(bitboard)
-	#for direction in directions:
-		#var direction_score = evaluate_direction(direction, isBlackMove)
-		#final_score += direction_score
-#
-	#return final_score
+func evaluate_position(isBlackMove, bitboard)-> float:
+	var final_score = 0
+	var directions = get_all_directions(bitboard)
+	for direction in directions:
+		var direction_score = evaluate_direction(direction, isBlackMove)
+		final_score += direction_score
+
+	return final_score
 
 func evaluate_direction(direction, isBlackMove) -> float:
 	var direction_product = 1
