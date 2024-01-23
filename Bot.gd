@@ -67,7 +67,7 @@ func evaluate_direction(direction, isBlackMove) -> float:
 
 	for cell in direction:
 		var cell_score = 0
-		if cell.is_empty():
+		if cell.size()==0: # Empty cell
 			cell_score = 1
 		elif top_piece(cell).type == 1:	# 1 is black piece
 			cell_score = top_piece(cell).size * 10
