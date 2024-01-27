@@ -96,7 +96,7 @@ func get_S_moves(white_pieces, black_pieces, is_black_move):
 			if black_pieces[0] & mask == mask:
 				for m in range(16):
 					if (temp_board[3] & mask2) == 0 and (temp_board[2] & mask2) == 0 and (temp_board[1] & mask2) == 0 and (temp_board[0] & mask2) == 0:
-						S_moves.append(Move.new(k, m, 1, true))
+						S_moves.append(Move.new(k, m, 0, true))
 					mask2 <<= 1
 				mask2 = 0b0000000000000001
 			mask <<= 1     
@@ -105,7 +105,7 @@ func get_S_moves(white_pieces, black_pieces, is_black_move):
 			if white_pieces[0] & mask == mask:
 				for m in range(16):
 					if (temp_board[3] & mask2) == 0 and (temp_board[2] & mask2) == 0 and (temp_board[1] & mask2) == 0 and (temp_board[0] & mask2) == 0:
-						S_moves.append(Move.new(k, m, 1, false))
+						S_moves.append(Move.new(k, m, 0, false))
 					mask2 <<= 1
 				mask2 = 0b0000000000000001
 			mask <<= 1     
@@ -121,7 +121,7 @@ func get_external_moves(white_pieces, black_pieces, is_black_move):
 		num_of_remaining_pieces = get_remaining_pieces(white_pieces)
 	for i in range(4):
 		if i < 3:
-			if num_of_remaining_pieces[i] != 0 and num_of_remaining_pieces[i+1] < 3:
+			if num_of_remaining_pieces[i] != 0 and num_of_remaining_pieces[i+1] < num_of_remaining_pieces[i]:
 				var moves = get_moves_to_empty_cell(white_pieces, black_pieces, i, is_black_move)
 				if moves.size() > 0:
 					for move in moves:
@@ -138,6 +138,8 @@ func get_external_moves(white_pieces, black_pieces, is_black_move):
 			external_moves.append(move)
 	return external_moves
 
+	
+# get external moves to empty cells
 func get_moves_to_empty_cell(white_pieces, black_pieces, size, is_black_move):
 	var temp_board = []
 	var mask = 0b0000000000000001
@@ -162,7 +164,7 @@ func get_available_external_sizes(pieces):
 	var num_of_remaining_pieces = get_remaining_pieces(pieces)
 	for i in range(4):
 		if i < 3:
-			if num_of_remaining_pieces[i] != 0 and num_of_remaining_pieces[i+1] < 3:
+			if num_of_remaining_pieces[i] != 0 and num_of_remaining_pieces[i+1] < num_of_remaining_pieces[i]:
 				available_sizes.append(true)
 			else:
 				available_sizes.append(false)
