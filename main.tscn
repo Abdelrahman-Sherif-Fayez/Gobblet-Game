@@ -50,7 +50,7 @@ grow_vertical = 2
 theme_override_font_sizes/font_size = 50
 text = "Select Game Mode:"
 
-[node name="Option1" type="Button" parent="SelectGameMode"]
+[node name="HvH" type="Button" parent="SelectGameMode"]
 layout_mode = 0
 offset_left = 35.0
 offset_top = 94.0
@@ -60,7 +60,7 @@ theme_override_font_sizes/font_size = 40
 toggle_mode = true
 text = " Human Vs Human"
 
-[node name="Option2" type="Button" parent="SelectGameMode"]
+[node name="HvAI" type="Button" parent="SelectGameMode"]
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
@@ -74,7 +74,7 @@ theme_override_font_sizes/font_size = 40
 toggle_mode = true
 text = " Human Vs AI"
 
-[node name="Option3" type="Button" parent="SelectGameMode"]
+[node name="AIvAI" type="Button" parent="SelectGameMode"]
 layout_mode = 0
 offset_left = 35.0
 offset_top = 286.0
@@ -160,3 +160,11 @@ stream = ExtResource("3_ahcva")
 
 [node name="GameFinished" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("3_ccjqa")
+
+[connection signal="pressed" from="SelectGameMode/HvH" to="GUI" method="_on_HvH_pressed"]
+[connection signal="pressed" from="SelectGameMode/HvAI" to="GUI" method="_on_HvAI_pressed"]
+[connection signal="pressed" from="SelectGameMode/AIvAI" to="GUI" method="_on_a_iv_ai_pressed"]
+[connection signal="pressed" from="SelectAIOne/EASY" to="GUI" method="_on_easy_pressed"]
+[connection signal="pressed" from="SelectAIOne/HARD" to="GUI" method="_on_hard_pressed"]
+[connection signal="pressed" from="SelectAITwo/EASY" to="GUI" method="_on_easy_bot2_pressed"]
+[connection signal="pressed" from="SelectAITwo/HARD" to="GUI" method="_on_hard_bot2_pressed"]

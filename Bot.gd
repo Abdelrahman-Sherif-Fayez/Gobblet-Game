@@ -1,102 +1,66 @@
 extends Node
-@onready var updated_bitboard = $"../Bitboard"
+@onready var bitboard = $"../Bitboard"
 
 const MAX_VALUE = 999999
 const MIN_VALUE = -999999
 
 var new_bot_bitboard_object
-
-var bitboard
-var whitepieces
-var blackpieces 
-
+var max_depth
+var current_move
 
 func set_board(bitboardGame):
 	bitboard = bitboardGame
 
-func play_next_move(move, isBlackMove):
+#Takes the player's turn and depth and will use search_moves to find the best move to play
+func play_best_move(isBlackMove, depth): 
+	new_bot_bitboard_object = bitboard.duplicate()
+	new_bot_bitboard_object.set_board(bitboard.white_pieces, bitboard.black_pieces)
+	print(new_bot_bitboard_object.white_pieces," ", new_bot_bitboard_object.black_pieces)
+	max_depth = depth
+	search_moves(isBlackMove, new_bot_bitboard_object, max_depth, MIN_VALUE, MAX_VALUE)
+	var move = current_move
+	print(move)
+	return move
 
-	if not isBlackMove:
-		whitepieces[move.size%4] |= 1 << move.to
-		#var newwhitepieces = whitepieces
-	elif isBlackMove:
-		blackpieces[move.size%4] |= 1 << move.to
-		#var newwhitepieces = white_pieces
-
-	#return Move.new(-1, 3, 100*100, 0) # for testing update_board (Working)
-	#will use search moves function and use make move function
-	#will update the bitboard with the move 
-
-func play_best_move(depth): 
-	new_bot_bitboard_object = updated_bitboard.duplicate()
-	new_bot_bitboard_object.set_board(updated_bitboard.white_pieces, updated_bitboard.black_pieces)
-	whitepieces = new_bot_bitboard_object.white_pieces
-	blackpieces = new_bot_bitboard_object.black_pieces
-	print(whitepieces," ", blackpieces)
-	var possible_moves = updated_bitboard.generate_move_set(whitepieces, blackpieces, true)
-	var eval = search_moves(true, possible_moves, depth, MIN_VALUE, MAX_VALUE)
-	print(eval[0]," ", eval[1])
-	return eval[1]
-
-func search_moves(isBlackMove, possible_moves, depth, alpha, beta):
-	##will use generate move set fuction recursively and will prune and use eval function 
-	##to select best move acc to prunning
-	if depth == 0 or not possible_moves: # Evaluation based on the current bitboard of the game when move or set of moves played
-		bitboard = updated_bitboard.get_board_int()
+##will use generate move set fuction and recursively call itself and will prune and use eval function 
+##to select best move according to prunning
+func search_moves(isBlackMove, search_board, depth, alpha, beta):
+	if depth == 0 or search_board.has_won() == "White wins" or search_board.has_won() == "Black wins":#Evaluation based on the bitboard of the game when move or set of moves played
 		return randi() % 100
-
-	if not isBlackMove: #white -> Maximizer (changes alpha)
+	
+	var possible_moves = bitboard.generate_move_set(search_board.white_pieces, search_board.black_pieces, isBlackMove)
+	
+	if not isBlackMove: #White Player which is the maximizer
 		var max_eval = MIN_VALUE
-		var best_move
-		var eval
-		for move in possible_moves: 
-			play_next_move(move, false)
-			if depth - 1 != 0:
-				var new_possible_moves = updated_bitboard.generate_move_set(whitepieces, blackpieces, true)
-				eval = search_moves(true, new_possible_moves, depth - 1, alpha, beta)
-			else: # if depth - 1 is zero -> evaluate the value of the current move immediately without expanding its moves
-				eval = search_moves(true, [], depth - 1, alpha, beta)
-			if depth - 1 == 0:
-				max_eval = max(max_eval, eval)
-			else:
-				max_eval = max(max_eval, eval[0])
-			alpha = max(alpha, max_eval)
-			if beta <= alpha:
-				break  # Beta cut-off
-			if depth - 1 == 0:
-				if eval == max_eval:
-					best_move = move
-			else:
-				if eval[0] == max_eval:
-					best_move = move
-		return [max_eval, best_move]
-		
-	else: #black
-		var best_move
-		var eval
+		for move in possible_moves:
+			var move_bitboard_object = search_board.duplicate()
+			move_bitboard_object.set_board(search_board.white_pieces, search_board.black_pieces)
+			move_bitboard_object.make_move(move, false)
+			var eval = search_moves(true, move_bitboard_object, depth-1, alpha, beta)
+			max_eval = max(max_eval, eval)
+			alpha = max(alpha, eval)
+			if beta <= alpha: # cutoff
+				break
+			if(depth == max_depth and eval >= alpha):
+				print(move)
+				current_move = move
+		return max_eval
+
+	elif isBlackMove:
 		var min_eval = MAX_VALUE
 		for move in possible_moves:
-			play_next_move(move, true)
-			if depth - 1 != 0:
-				var new_possible_moves = updated_bitboard.generate_move_set(whitepieces, blackpieces, false)
-				eval = search_moves(false, new_possible_moves, depth - 1, alpha, beta)
-			else:
-				eval = search_moves(false, [], depth - 1, alpha, beta)
-				
-			if depth -1 == 0:
-				min_eval = min(min_eval, eval)
-			elif depth > 1:
-				min_eval = min(min_eval, eval[0])
-			beta = min(beta, min_eval)
-			if beta <= alpha:
-				break  # Beta cut-off
-			if depth - 1 == 0:
-				if eval == min_eval:
-					best_move = move
-			else:
-				if eval[0] == min_eval:
-					best_move = move
-		return [min_eval, best_move]
+			var move_bitboard_object = search_board.duplicate()
+			move_bitboard_object.set_board(search_board.white_pieces, search_board.black_pieces)
+			move_bitboard_object.make_move(move, true)
+			var eval = search_moves(false, move_bitboard_object, depth-1, alpha, beta)
+			min_eval = min(min_eval, eval)
+			beta = min(beta, eval)
+			if beta <= alpha: # cutoff
+				break
+			if(depth == max_depth and eval <= beta):
+				print(move)
+				current_move = move
+		return min_eval
 
 #Our New Implementation
 
