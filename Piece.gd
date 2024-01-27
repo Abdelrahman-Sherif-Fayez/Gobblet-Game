@@ -4,7 +4,7 @@ signal piece_selected(piece)
 
 @onready var icon = $Icon
 var tile_ID = -1
-var type : int
+var type : int # small=0, medium=1, large=2, XL=3
 
 func load_icon(piece_name):
 	icon.texture = load(DataHandler.assets[piece_name])

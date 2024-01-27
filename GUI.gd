@@ -22,7 +22,7 @@ var white_pieces_array := [[], [], []]
 var piece_array := [[], [], [], [],[], [], [], [], [], [], [], [], [], [], [], []] # Array that contains the top piece of each of the 16 tiles
 var piece_selected = null
 var game_bitboard # the current bitboard of the game
-var gamestarted := false # false at beginning (only true for testing)
+var gamestarted = null
 
 
 func _process(_delta):
@@ -57,29 +57,46 @@ func _on_tile_clicked(tile) -> void:
 	clear_board_filter()
 	piece_selected = null
 	if gamestarted:
-		var move = bot.play_next_move()
+		var move = bot.play_best_move(2) # pass the depth to play_best_move 
+		print(move.from_)
+		print(move.to)
+		print(move.size)
+		print(move.isblack)
 		update_board(move)
 
 func update_board(move):
 	var piece_to_move
+	if move.size ==0:#small
+		move.size = 25*25
+	elif move.size ==1: #medium
+		move.size = 50*50
+	elif move.size ==2: #large
+		move.size = 75*75
+	elif move.size ==3: #XL
+		move.size = 100*100
+
 	if move.from_ == -1:
 		if move.isblack:
 			for i in range(3):
-				if(black_pieces_array[i][0].get_size_number() * black_pieces_array[i][0].get_size_number() == move.size):
-					piece_to_move = black_pieces_array[i].pop_front()
-					break;
+				#print(black_pieces_array[i][0].get_size_number())
+				if len(black_pieces_array[i]) != 0:
+					if(black_pieces_array[i][0].get_size_number() * black_pieces_array[i][0].get_size_number() == move.size):
+						piece_to_move = black_pieces_array[i].pop_front()
+						break;
 		else:
 			for i in range(3):
-				print(move.size)
-				print(white_pieces_array[i][0].get_size())
-				if(white_pieces_array[i][0].get_size_number() * white_pieces_array[i][0].get_size_number() == move.size):
-					piece_to_move = white_pieces_array[i].pop_front()
-					break;
+				#print(move.size)
+				#print(white_pieces_array[i][0].get_size())
+				if len(white_pieces_array[i]) != 0 :
+					if(white_pieces_array[i][0].get_size_number() * white_pieces_array[i][0].get_size_number() == move.size):
+						piece_to_move = white_pieces_array[i].pop_front()
+						break;
 	else:
 		piece_to_move = piece_array[move.from_].pop_front()
 		remove_piece_from_bitboard(piece_to_move)
 	
 	var tween = get_tree().create_tween()
+	print(piece_to_move)
 	var icon_offset = piece_to_move.get_size()
 	icon_offset.x = icon_offset.x / 2
 	icon_offset.y = icon_offset.y /  2
@@ -87,6 +104,8 @@ func update_board(move):
 	piece_array[move.to].push_front(piece_to_move)
 	piece_to_move.tile_ID = move.to
 	bitboard.add_piece(move.to, piece_to_move.type)
+	self.move_child(piece_to_move, -1)
+	#print(bitboard)
 	#Check if some color has won
 	var winningColor = bitboard.has_won()
 	if winningColor == "Black wins" || winningColor == "White wins":
@@ -142,7 +161,7 @@ func add_piece(piece_type, location, is_black, stack_no) -> void: #location is a
 	new_piece.piece_selected.connect(_on_piece_selected)
 
 func _on_piece_selected(piece):
-	#if gamestarted:
+	if gamestarted:
 		if piece_selected:
 			_on_tile_clicked(grid_array[piece.tile_ID])
 		else:
@@ -328,14 +347,14 @@ func _on_start_game_button_pressed():
 	select_ai_2_diff_label.hide()
 	game_status_label.hide()
 	player_turn_label.show()
-	player_turn_label.text = "Black Turn"
+	player_turn_label.text = "White Turn"
 	$StartGameButton.text = "Restart"
 	$"../BackgroundMusic".play()
-	#gamestarted = true
 	piece_selected = null
 	clear_game()
 	bitboard.clear()
 	create_tiles()
+	gamestarted = true
 	Initialize_gobblet_board()
 
 func _on_home_button_pressed():
@@ -344,13 +363,12 @@ func _on_home_button_pressed():
 	select_ai_2_diff_label.show()
 	game_status_label.hide()
 	player_turn_label.hide()
+	gamestarted = false
 	$StartGameButton.text = "StartGame"
 	$"../BackgroundMusic".stop()
 	clear_game()
 	bitboard.clear()
 	#Reset all variables to be made to control the game
-	
-	
 
 func clear_game():
 	piece_array = [[], [], [], [],[], [], [], [], [], [], [], [], [], [], [], []]
