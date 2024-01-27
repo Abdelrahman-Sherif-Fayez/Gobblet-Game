@@ -91,15 +91,6 @@ offset_bottom = 367.0
 theme_override_font_sizes/font_size = 40
 text = "StartGame"
 
-[node name="TestButton" type="Button" parent="."]
-layout_mode = 0
-offset_left = 1110.0
-offset_top = 380.0
-offset_right = 1244.0
-offset_bottom = 464.0
-theme_override_font_sizes/font_size = 40
-text = "Test"
-
 [node name="HomeButton" type="Button" parent="."]
 layout_mode = 0
 offset_left = 1090.0
@@ -122,5 +113,4 @@ script = ExtResource("4_hcji7")
 script = ExtResource("5_pn7m7")
 
 [connection signal="pressed" from="StartGameButton" to="." method="_on_start_game_button_pressed"]
-[connection signal="pressed" from="TestButton" to="." method="_on_test_button_pressed"]
 [connection signal="pressed" from="HomeButton" to="." method="_on_home_button_pressed"]

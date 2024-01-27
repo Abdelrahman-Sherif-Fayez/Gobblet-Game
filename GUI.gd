@@ -6,15 +6,23 @@ extends Control
 @onready var gobblet_board = $GobbletBoard
 @onready var bitboard = $Bitboard
 @onready var generate_path = $GeneratePath
-@onready var bot = $Bot
+@onready var bot_1 = $Bot
+@onready var bot_2 = $Bot
 
 # For Labels and Buttons
 @onready var main = $".."
 @onready var game_status_label = $"../GameStatus"
 @onready var player_turn_label = $"../PlayerTurn"
 @onready var select_game_mode_label = $"../SelectGameMode"
+@onready var select_game_mode_hvh_button = $"../SelectGameMode/HvH"
+@onready var select_game_mode_hvai_button = $"../SelectGameMode/HvAI"
+@onready var select_game_mode_aivai_button = $"../SelectGameMode/AIvAI"
 @onready var select_ai_1_diff_label = $"../SelectAIOne"
 @onready var select_ai_2_diff_label = $"../SelectAITwo"
+@onready var select_ai_1_easy_button = $"../SelectAIOne/EASY"
+@onready var select_ai_1_hard_button = $"../SelectAIOne/HARD"
+@onready var select_ai_2_easy_button = $"../SelectAITwo/EASY"
+@onready var select_ai_2_hard_button = $"../SelectAITwo/HARD"
 
 var grid_array := []
 var black_pieces_array := [[], [], []]
@@ -23,7 +31,9 @@ var piece_array := [[], [], [], [],[], [], [], [], [], [], [], [], [], [], [], [
 var piece_selected = null
 var game_bitboard # the current bitboard of the game
 var gamestarted = null
-
+var bot_1_difficulty = 1 # bot 1 depth and is by default equal 1 if not changed
+var bot_2_difficulty = 1  # bot 2 depth and is by default equal 1 if not changed
+var game_mode = 1 # can take 1 or 2 or 3 to represent HvsH, HvsAI, AIvsAI and default is HvsH
 
 func _process(_delta):
 	pass
@@ -45,7 +55,8 @@ func create_tile(pos_vector):
 	new_tile.position += pos_vector
 	board_grid.add_child(new_tile)
 	grid_array.push_back(new_tile)
-	new_tile.tile_clicked.connect(_on_tile_clicked)
+	if game_mode != 3:
+		new_tile.tile_clicked.connect(_on_tile_clicked)
 
 # A function to handle the cases when a tile is selected
 func _on_tile_clicked(tile) -> void:
@@ -56,8 +67,8 @@ func _on_tile_clicked(tile) -> void:
 	move_piece(piece_selected, tile.tile_ID)
 	clear_board_filter()
 	piece_selected = null
-	if gamestarted:
-		var move = bot.play_best_move(2) # pass the depth to play_best_move 
+	if gamestarted and game_mode == 2:
+		var move = bot_1.play_best_move(true,bot_1_difficulty) # pass whose player turn and depth to play_best_move 
 		print(move.from_)
 		print(move.to)
 		print(move.size)
@@ -158,7 +169,8 @@ func add_piece(piece_type, location, is_black, stack_no) -> void: #location is a
 	#icon_offset.y = icon_offset.y /  2
 	new_piece.global_position = location
 	#piece_array[location] = new_piece
-	new_piece.piece_selected.connect(_on_piece_selected)
+	if game_mode != 3:
+		new_piece.piece_selected.connect(_on_piece_selected)
 
 func _on_piece_selected(piece):
 	if gamestarted:
@@ -321,25 +333,25 @@ func Initialize_gobblet_board():
 				piece_type_white = DataHandler.PieceNames.WHITE_100
 			add_piece(piece_type_black, location_black, 1, i)
 			add_piece(piece_type_white, location_white, 0, i)
-
-
-func _on_test_button_pressed(): # for testing purposes using print statements
-	
-	# Initializing test bitboards
-	#var test_black_pieces = [0b0000000000000001, 0b0000000000100000, 0b0000010000000000, 0b1000000000000000]
-	#var test_white_pieces = [0b0000000000000000, 0b0000000000000000, 0b0000000000000000, 0b0000000000000000]
-	#
-	#set_board_filter(bitboard.get_board_int())
-	
-	#main.alternate_turn()
-	
-	#Set the board with these test states
-	#bitboard.set_board(test_white_pieces, test_black_pieces)
-	
-	#Call the has_won function and print the result
-	var result = bitboard.has_won()
-	print(result)
-
+	while gamestarted and game_mode == 3:
+		# pass whose player turn (1st player is white) and depth to play_best_move 
+		var move = bot_1.play_best_move(false,bot_1_difficulty) 
+		print(move.from_)
+		print(move.to)
+		print(move.size)
+		print(move.isblack)
+		update_board(move)
+		if(bot_2_difficulty != 3):
+			await get_tree().create_timer(0.5).timeout
+		# pass whose player turn (2nd player is black) and depth to play_best_move 
+		var move_bot2 = bot_2.play_best_move(true,bot_2_difficulty)
+		print(move_bot2.from_)
+		print(move_bot2.to)
+		print(move_bot2.size)
+		print(move_bot2.isblack)
+		update_board(move_bot2)
+		if(bot_1_difficulty != 3):
+			await get_tree().create_timer(0.5).timeout
 
 func _on_start_game_button_pressed():
 	select_game_mode_label.hide()
@@ -378,3 +390,42 @@ func clear_game():
 	gamestarted = false
 	get_tree().call_group("all_pieces","queue_free")
 	get_tree().call_group("tiles","queue_free")
+
+
+func _on_HvH_pressed():
+	game_mode = 1
+	select_game_mode_hvh_button.button_pressed = true
+	select_game_mode_hvai_button.button_pressed = false
+	select_game_mode_aivai_button.button_pressed = false
+
+func _on_HvAI_pressed():
+	game_mode = 2
+	select_game_mode_hvh_button.button_pressed = false
+	select_game_mode_hvai_button.button_pressed = true
+	select_game_mode_aivai_button.button_pressed = false
+
+func _on_a_iv_ai_pressed():
+	game_mode = 3
+	select_game_mode_hvh_button.button_pressed = false
+	select_game_mode_hvai_button.button_pressed = false
+	select_game_mode_aivai_button.button_pressed = true
+
+func _on_easy_pressed():
+	bot_1_difficulty = 1
+	select_ai_1_easy_button.button_pressed = true
+	select_ai_1_hard_button.button_pressed = false
+
+func _on_hard_pressed():
+	bot_1_difficulty = 3
+	select_ai_1_easy_button.button_pressed = false
+	select_ai_1_hard_button.button_pressed = true
+
+func _on_easy_bot2_pressed():
+	bot_2_difficulty = 1
+	select_ai_2_easy_button.button_pressed = true
+	select_ai_2_hard_button.button_pressed = false
+
+func _on_hard_bot2_pressed():
+	bot_2_difficulty = 3
+	select_ai_2_easy_button.button_pressed = false
+	select_ai_2_hard_button.button_pressed = true
