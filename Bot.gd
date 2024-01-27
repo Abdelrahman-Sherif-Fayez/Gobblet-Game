@@ -40,7 +40,7 @@ func play_best_move(depth):
 func search_moves(isBlackMove, possible_moves, depth, alpha, beta):
 	##will use generate move set fuction recursively and will prune and use eval function 
 	##to select best move acc to prunning
-	if depth == 0 or not possible_moves:
+	if depth == 0 or not possible_moves: # Evaluation based on the current bitboard of the game when move or set of moves played
 		bitboard = updated_bitboard.get_board_int()
 		return randi() % 100
 
@@ -55,7 +55,7 @@ func search_moves(isBlackMove, possible_moves, depth, alpha, beta):
 				eval = search_moves(true, new_possible_moves, depth - 1, alpha, beta)
 			else: # if depth - 1 is zero -> evaluate the value of the current move immediately without expanding its moves
 				eval = search_moves(true, [], depth - 1, alpha, beta)
-			if depth -1 == 0:
+			if depth - 1 == 0:
 				max_eval = max(max_eval, eval)
 			else:
 				max_eval = max(max_eval, eval[0])
@@ -81,6 +81,7 @@ func search_moves(isBlackMove, possible_moves, depth, alpha, beta):
 				eval = search_moves(false, new_possible_moves, depth - 1, alpha, beta)
 			else:
 				eval = search_moves(false, [], depth - 1, alpha, beta)
+				
 			if depth -1 == 0:
 				min_eval = min(min_eval, eval)
 			elif depth > 1:
