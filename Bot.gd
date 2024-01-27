@@ -26,7 +26,7 @@ func play_best_move(isBlackMove, depth):
 ##to select best move according to prunning
 func search_moves(isBlackMove, search_board, depth, alpha, beta):
 	if depth == 0 or search_board.has_won() == "White wins" or search_board.has_won() == "Black wins":#Evaluation based on the bitboard of the game when move or set of moves played
-		return randi() % 100
+		return evaluate_position(isBlackMove, search_board)
 	
 	var possible_moves = bitboard.generate_move_set(search_board.white_pieces, search_board.black_pieces, isBlackMove)
 	
@@ -64,75 +64,112 @@ func search_moves(isBlackMove, search_board, depth, alpha, beta):
 
 #Our New Implementation
 
-#func evaluate_position(isBlackMove, board_array)-> float:
-	#if has_won() == "Black wins" or has_won() == "White wins":
-		#return MIN_VALUE 
-	#elif is_black_move: 
-		#return MAX_VALUE
-	#var final_score = 0
-	#var directions = get_all_directions(board_array)
-	#for direction in directions:
-		#var direction_score = evaluate_direction(direction, isBlackMove)
-		#final_score += direction_score
-#
-	#return final_score
+func evaluate_position(is_black_move , Search_Board_object):
+	var white_pieces = Search_Board_object.white_pieces
+	var black_pieces = Search_Board_object.black_pieces
+	var diagonal_mask1 = 0b1000010000100001
+	var diagonal_mask2 = 0b0001001001001000
+	var diagonal_masks = [diagonal_mask1 , diagonal_mask2]
+	var row_mask = 0b0000000000001111 
+	var column_msk = 0b0001000100010001
+	var iterator_mask1 = 0b0000000000000001
+	var iterator_mask2 = 0b0000000000000001
+	var iterator_mask3 = 0b0000000000000001
+	var result = Search_Board_object.get_top_view_board_takes_input(white_pieces, black_pieces)
+	var white_top_view = result["white"]
+	var black_top_view = result["black"]
+	var top_board = 0
+	var mult_temp = 1
+	var final_score = 0
+	var temp_accumalator = 0
+	var current_top_view_array
+	if is_black_move:
+		current_top_view_array = black_top_view 
+		for i in range(4):
+			top_board |= black_top_view[i]
+	else:
+		current_top_view_array = white_top_view
+		for i in range(4):
+			top_board |= white_top_view[i]
 
-#func evaluate_position(isBlackMove, board_array)-> float:
-	# if has_won() == "Black wins" or has_won() == "White wins":
-	#     return MIN_VALUE if is_black_move else MAX_VALUE
+	for dm in diagonal_masks:
+		var temp = top_board & dm
+		print("temp")
+		print(temp)
+		for k in range(16):
+			if (temp & iterator_mask1) == iterator_mask1:
+					if (current_top_view_array[3] & iterator_mask1) == iterator_mask1:
+						mult_temp *= 40
+						final_score += mult_temp
+					elif (current_top_view_array[2] & iterator_mask1) == iterator_mask1:
+						mult_temp *= 30
+						final_score += mult_temp
+					elif (current_top_view_array[1] & iterator_mask1) == iterator_mask1:
+						mult_temp *= 20
+						final_score += mult_temp
+					elif (current_top_view_array[0] & iterator_mask1) == iterator_mask1:
+						mult_temp *= 10
+						final_score += mult_temp
+					print("mult_temp")
+					print(mult_temp)
+			iterator_mask1 <<=1
+		# temp_accumalator = mult_temp
+		iterator_mask1 = 0b0000000000000001
+		mult_temp = 1
+	# final_score += temp_accumalator
+	print("final_score")
+	print(final_score)
+	var temp_rm = row_mask
+	mult_temp = 1
+	for i in range(4):
+		var temp = top_board & temp_rm
+		for k in range(16):
+			if (temp & iterator_mask2) == iterator_mask2:
+				if (current_top_view_array[3] & iterator_mask2) == iterator_mask2:
+					mult_temp *= 40
+					final_score += mult_temp
+				elif (current_top_view_array[2] & iterator_mask2) == iterator_mask2:
+					mult_temp *= 30
+					final_score += mult_temp
+				elif (current_top_view_array[1] & iterator_mask2) == iterator_mask2:
+					mult_temp *= 20
+					final_score += mult_temp
+				elif (current_top_view_array[0] & iterator_mask2) == iterator_mask2:
+					mult_temp *= 10
+					final_score += mult_temp
+			iterator_mask2 <<=1
+		iterator_mask2 = 0b0000000000000001
+		# temp_accumalator = mult_temp
+		mult_temp = 1
+		temp_rm <<= 4
+	# final_score += temp_accumalator
+	print("final_score")
+	print(final_score)
+	var temp_cm = column_msk
+	mult_temp = 1
+	for i in range(4):
 
-
-#func top_piece(cell):
-	#var top_piece = cell[-1]
-	#return top_piece
-#
-#func evaluate_direction(direction, isBlackMove) -> float:
-	#var direction_product = 1
-#
-	#for cell in direction:
-		#var cell_score = 0
-		#if cell.size()==0: # Empty cell
-			#cell_score = 1
-		#elif top_piece(cell).type == 1:	# 1 is black piece
-			#cell_score = top_piece(cell).size * 10
-			#if not isBlackMove:
-				#cell_score = -cell_score
-		#else:
-			#cell_score = top_piece(cell).size * 10
-			#if isBlackMove:
-				#cell_score = -cell_score
-#
-		## Multiply the cell score with the current product
-		#direction_product *= cell_score
-#
-	#return direction_product
-#
-#func get_all_directions(board_array):
-	#var directions = []
-#
-	## Add all rows
-	#for i in range(4):
-		#directions.append(board_array[i])
-#
-	## Add all columns
-	#for i in range(4):
-		#var column = []
-		#for j in range(4):
-			#column.append(board_array[j][i])
-		#directions.append(column)
-#
-	## Add diagonal (top-left to bottom-right)
-	#var diagonal1 = []
-	#for i in range(4):
-		#diagonal1.append(board_array[i][i])
-	#directions.append(diagonal1)
-#
-	## Add diagonal (top-right to bottom-left)
-	#var diagonal2 = []
-	#for i in range(4):
-		#diagonal2.append(board_array[i][3 - i])
-	#directions.append(diagonal2)
-#
-	#return directions
-
-
+		var temp = top_board & temp_cm
+		for k in range(16):
+			if (temp & iterator_mask3) == iterator_mask3:
+				if (current_top_view_array[3] & iterator_mask3) == iterator_mask3:
+					mult_temp *= 40
+					final_score += mult_temp
+				elif (current_top_view_array[2] & iterator_mask3) == iterator_mask3:
+					mult_temp *= 30
+					final_score += mult_temp
+				elif (current_top_view_array[1] & iterator_mask3) == iterator_mask3:
+					mult_temp *= 20
+					final_score += mult_temp
+				elif (current_top_view_array[0] & iterator_mask3) == iterator_mask3:
+					mult_temp *= 10
+					final_score += mult_temp
+			iterator_mask3 <<=1
+		# temp_accumalator = mult_temp
+		iterator_mask3 = 0b0000000000000001
+		mult_temp = 1 
+		temp_cm <<= 1
+	# final_score += temp_accumalator
+	print("final_score")
+	print(final_score)
+	return final_score

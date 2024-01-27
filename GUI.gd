@@ -418,7 +418,7 @@ func _on_easy_pressed():
 	select_ai_1_hard_button.button_pressed = false
 
 func _on_hard_pressed():
-	bot_1_difficulty = 3
+	bot_1_difficulty = 2
 	select_ai_1_easy_button.button_pressed = false
 	select_ai_1_hard_button.button_pressed = true
 
@@ -428,6 +428,6 @@ func _on_easy_bot2_pressed():
 	select_ai_2_hard_button.button_pressed = false
 
 func _on_hard_bot2_pressed():
-	bot_2_difficulty = 3
+	bot_2_difficulty = 2
 	select_ai_2_easy_button.button_pressed = false
 	select_ai_2_hard_button.button_pressed = true
