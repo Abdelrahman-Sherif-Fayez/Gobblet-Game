@@ -1,7 +1,7 @@
 extends Node
 class_name Bitboard
 
-@onready var generate_path = $"--/GeneratePath"
+@onready var generate_path = $"../GeneratePath"
 
 var white_pieces = [0,0,0,0] #[small, medium, large, XL]
 var black_pieces = [0,0,0,0]
@@ -135,6 +135,7 @@ func get_top_view_board_takes_input(white_pieces: Array, black_pieces: Array) ->
 
 func generate_move_set(white_pieces: Array, black_pieces: Array, is_black_move: bool) -> Array:
 	var possible_moves = []
+	#print(white_pieces, " ", black_pieces, " ", is_black_move)
 	var XL_moves = generate_path.get_XL_moves(white_pieces, black_pieces, is_black_move)
 	var L_moves = generate_path.get_L_moves(white_pieces, black_pieces, is_black_move)
 	var M_moves = generate_path.get_M_moves(white_pieces, black_pieces, is_black_move)
