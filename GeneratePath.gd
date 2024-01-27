@@ -96,7 +96,7 @@ func get_S_moves(white_pieces, black_pieces, is_black_move):
 			if black_pieces[0] & mask == mask:
 				for m in range(16):
 					if (temp_board[3] & mask2) == 0 and (temp_board[2] & mask2) == 0 and (temp_board[1] & mask2) == 0 and (temp_board[0] & mask2) == 0:
-						S_moves.append(Move.new(k, m, 1, true))
+						S_moves.append(Move.new(k, m, 0, true))
 					mask2 <<= 1
 				mask2 = 0b0000000000000001
 			mask <<= 1     
@@ -105,7 +105,7 @@ func get_S_moves(white_pieces, black_pieces, is_black_move):
 			if white_pieces[0] & mask == mask:
 				for m in range(16):
 					if (temp_board[3] & mask2) == 0 and (temp_board[2] & mask2) == 0 and (temp_board[1] & mask2) == 0 and (temp_board[0] & mask2) == 0:
-						S_moves.append(Move.new(k, m, 1, false))
+						S_moves.append(Move.new(k, m, 0, false))
 					mask2 <<= 1
 				mask2 = 0b0000000000000001
 			mask <<= 1     
