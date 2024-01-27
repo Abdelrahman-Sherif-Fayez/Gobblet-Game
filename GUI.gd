@@ -333,6 +333,7 @@ func Initialize_gobblet_board():
 				piece_type_white = DataHandler.PieceNames.WHITE_100
 			add_piece(piece_type_black, location_black, 1, i)
 			add_piece(piece_type_white, location_white, 0, i)
+			
 	while gamestarted and game_mode == 3:
 		# pass whose player turn (1st player is white) and depth to play_best_move 
 		var move = bot_1.play_best_move(false,bot_1_difficulty) 
@@ -340,18 +341,19 @@ func Initialize_gobblet_board():
 		print(move.to)
 		print(move.size)
 		print(move.isblack)
+		if(bot_1_difficulty == 1 and bot_2_difficulty == 1):
+				await get_tree().create_timer(1).timeout
 		update_board(move)
-		if(bot_2_difficulty != 3):
-			await get_tree().create_timer(0.5).timeout
-		# pass whose player turn (2nd player is black) and depth to play_best_move 
-		var move_bot2 = bot_2.play_best_move(true,bot_2_difficulty)
-		print(move_bot2.from_)
-		print(move_bot2.to)
-		print(move_bot2.size)
-		print(move_bot2.isblack)
-		update_board(move_bot2)
-		if(bot_1_difficulty != 3):
-			await get_tree().create_timer(0.5).timeout
+		# pass whose player turn (2nd player is black) and depth to play_best_move
+		if gamestarted: 
+			var move_bot2 = bot_2.play_best_move(true,bot_2_difficulty)
+			print(move_bot2.from_)
+			print(move_bot2.to)
+			print(move_bot2.size)
+			print(move_bot2.isblack)
+			if(bot_1_difficulty == 1 and bot_2_difficulty == 1):
+				await get_tree().create_timer(1).timeout
+			update_board(move_bot2)
 
 func _on_start_game_button_pressed():
 	select_game_mode_label.hide()
