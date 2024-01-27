@@ -341,8 +341,7 @@ func Initialize_gobblet_board():
 		print(move.to)
 		print(move.size)
 		print(move.isblack)
-		if(bot_1_difficulty == 1 and bot_2_difficulty == 1):
-				await get_tree().create_timer(1).timeout
+		await get_tree().create_timer(1).timeout
 		update_board(move)
 		# pass whose player turn (2nd player is black) and depth to play_best_move
 		if gamestarted: 
@@ -351,8 +350,7 @@ func Initialize_gobblet_board():
 			print(move_bot2.to)
 			print(move_bot2.size)
 			print(move_bot2.isblack)
-			if(bot_1_difficulty == 1 and bot_2_difficulty == 1):
-				await get_tree().create_timer(1).timeout
+			await get_tree().create_timer(1).timeout
 			update_board(move_bot2)
 
 func _on_start_game_button_pressed():
