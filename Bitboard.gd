@@ -40,16 +40,23 @@ func remove_piece(location, piece_type):
 func make_move(move, isBlackMove):
 	var fromList = []
 	if isBlackMove:
-		fromList = black_pieces
+		fromList = self.black_pieces
 	else:
-		fromList = white_pieces
-	var fromBit = (1 << move.from)
+		fromList = self.white_pieces
+	var fromBit = 0
 	var toBit = (1 << move.to)
-	for i in range(3,-1,-1):
-		if (fromList[i] & fromBit) != 0:
-			fromList[i] &= ~fromBit
-			fromList[i] |= toBit
-			break
+	if move.from_ != -1:
+		fromBit = (1 << move.from_)
+		for i in range(3,-1,-1):
+			if (fromList[i] & fromBit) != 0:
+				fromList[i] &= ~fromBit
+				fromList[i] |= toBit
+				break
+	else:
+		for i in range(3,-1,-1):
+			if(move.size == i):
+				fromList[i] |= toBit
+	
 
 func clear():
 	white_pieces = [0,0,0,0]
