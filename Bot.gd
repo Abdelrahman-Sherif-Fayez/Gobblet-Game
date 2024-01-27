@@ -1,5 +1,4 @@
 extends Node
-extends Bitboard
 
 var bitboard
 const MAX_VALUE = 999999
@@ -50,7 +49,7 @@ func play_next_move():
 #
 #func evaluate_position(isBlackMove, board_array)-> float:
 	# if has_won() == "Black wins" or has_won() == "White wins":
-    #     return MIN_VALUE if is_black_move else MAX_VALUE
+	#     return MIN_VALUE if is_black_move else MAX_VALUE
 	#var final_score = 0
 	#var directions = get_all_directions(board_array)
 	#for direction in directions:
