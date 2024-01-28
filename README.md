@@ -11,8 +11,7 @@ Choose between Easy and Hard difficulty to tailor the challenge to your preferen
 
 AI vs AI:
 Watch as computer-controlled opponents face off each other
-
-3. Difficulty Levels:
+2. Difficulty Levels:
    
 Easy:
 Suitable for casual players and those new to the game.
