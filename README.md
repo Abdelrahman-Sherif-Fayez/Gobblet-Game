@@ -1,21 +1,27 @@
 Instructions:
 1. Game Modes:
+   
 Player vs Player (PvP):
 Challenge your friends or other players in intense one-on-one battles.
 Select your difficulty level (Easy or Hard) before starting the match.
+
 Player vs AI:
 Test your skills against computer-controlled opponents.
 Choose between Easy and Hard difficulty to tailor the challenge to your preference.
+
 AI vs AI:
 Watch as computer-controlled opponents face off each other
-2. Difficulty Levels:
+
+3. Difficulty Levels:
+   
 Easy:
 Suitable for casual players and those new to the game.
 Provides a more forgiving experience with simpler challenges.
 Hard:
+
 Recommended for seasoned players seeking a higher level of difficulty.
 Presents complex challenges that require strategic thinking and skill.
-3. Game Rules
+5. Game Rules
 
 Gobblet is a board game that combines the rules of tic-tac-toe with a memory challenge. 
 The game can be played on a 4x4 board, with different levels of difficulty. 
