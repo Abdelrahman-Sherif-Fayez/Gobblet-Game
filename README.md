@@ -11,6 +11,7 @@ Choose between Easy and Hard difficulty to tailor the challenge to your preferen
 
 AI vs AI:
 Watch as computer-controlled opponents face off each other
+
 2. Difficulty Levels:
    
 Easy:
@@ -20,7 +21,8 @@ Hard:
 
 Recommended for seasoned players seeking a higher level of difficulty.
 Presents complex challenges that require strategic thinking and skill.
-5. Game Rules
+
+3. Game Rules
 
 Gobblet is a board game that combines the rules of tic-tac-toe with a memory challenge. 
 The game can be played on a 4x4 board, with different levels of difficulty. 
